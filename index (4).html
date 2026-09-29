@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MCQ Marks Entry — 2026 O/L</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e28;
+    --border: #252a38;
+    --accent: #4f9cf9;
+    --success: #34d399;
+    --danger: #f87171;
+    --warning: #fbbf24;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Sora', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .app { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 1rem; }
+  .header { padding: 1.5rem 0 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+  .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); flex-shrink: 0; }
+  .header h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.5px; }
+  .header p { font-size: 12px; color: var(--muted); font-family: var(--mono); padding-left: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .card-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; font-family: var(--mono); }
+  .url-row { display: flex; gap: 8px; }
+  .url-row input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 11px; font-family: var(--mono); color: var(--text); outline: none; transition: border-color 0.2s; }
+  .url-row input:focus { border-color: var(--accent); }
+  .url-row input::placeholder { color: var(--muted); }
+  .btn-small { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 16px; font-size: 12px; font-family: var(--mono); color: var(--text); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .btn-small:hover { border-color: var(--accent); color: var(--accent); }
+  .url-status { font-size: 11px; font-family: var(--mono); margin-top: 8px; color: var(--success); min-height: 16px; }
+  .mcq-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mcq-pill { padding: 7px 16px; border-radius: 100px; font-size: 12px; font-family: var(--mono); font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); transition: all 0.15s; }
+  .mcq-pill:hover { color: var(--text); border-color: #3a4058; }
+  .mcq-pill.active { background: rgba(79,156,249,0.12); border-color: var(--accent); color: var(--accent); }
+  .mcq-add { padding: 7px 14px; border-radius: 100px; font-size: 12px; font-family: var(--mono); cursor: pointer; border: 1px dashed #2d3447; background: transparent; color: var(--muted); transition: all 0.15s; }
+  .mcq-add:hover { color: var(--text); border-color: var(--muted); }
+  .active-mcq { display: inline-flex; align-items: center; gap: 8px; background: rgba(79,156,249,0.08); border: 1px solid rgba(79,156,249,0.25); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-family: var(--mono); color: var(--accent); margin-bottom: 16px; }
+  .active-mcq::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px var(--accent); }
+  .id-input-row { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .id-input-row:focus-within { border-color: var(--accent); }
+  .id-prefix { padding: 14px 16px; font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--muted); border-right: 1px solid var(--border); background: var(--bg); letter-spacing: 2px; flex-shrink: 0; }
+  .id-zero { padding: 14px 4px 14px 12px; font-family: var(--mono); font-size: 18px; color: var(--muted); }
+  .id-suffix { flex: 1; background: transparent; border: none; outline: none; padding: 14px 16px 14px 4px; font-family: var(--mono); font-size: 24px; font-weight: 500; color: var(--text); letter-spacing: 6px; width: 80px; }
+  .id-suffix::placeholder { color: #2d3447; }
+  .result-box { margin-top: 12px; border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; animation: fadeIn 0.2s ease; }
+  .result-box.found { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); }
+  .result-box.notfound { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); }
+  .result-icon { font-size: 18px; flex-shrink: 0; font-family: var(--mono); }
+  .result-name { font-size: 14px; font-weight: 500; color: var(--success); }
+  .result-id { font-size: 11px; font-family: var(--mono); color: var(--muted); margin-top: 2px; }
+  .result-err { font-size: 13px; color: var(--danger); }
+  .view-graph-btn {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: rgba(79,156,249,0.1);
+    border: 1px solid rgba(79,156,249,0.3);
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .view-graph-btn:hover {
+    background: rgba(79,156,249,0.18);
+    border-color: var(--accent);
+  }
+  .marks-area { display: flex; align-items: center; gap: 16px; margin-top: 4px; }
+  .marks-input { width: 120px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: var(--mono); font-size: 32px; font-weight: 500; text-align: center; color: var(--text); outline: none; transition: border-color 0.2s; -moz-appearance: textfield; }
+  .marks-input::-webkit-inner-spin-button, .marks-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .marks-input:focus { border-color: var(--accent); }
+  .out-of { font-family: var(--mono); font-size: 16px; color: var(--muted); }
+  .btn-submit { width: 100%; padding: 13px; margin-top: 16px; border-radius: 10px; font-size: 13px; font-family: var(--mono); font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
+  .btn-submit:hover:not(:disabled) { background: rgba(79,156,249,0.1); border-color: var(--accent); color: var(--accent); }
+  .btn-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-submit.loading { background: rgba(79,156,249,0.08); border-color: rgba(79,156,249,0.3); color: var(--accent); }
+
+  /* Send SMS button */
+  .sms-section { margin-top: 1rem; }
+  .sms-card { background: var(--surface); border: 1px solid rgba(251,191,36,0.2); border-radius: 12px; padding: 1.25rem; }
+  .sms-card .card-label { color: var(--warning); }
+  .sms-info { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-bottom: 14px; line-height: 1.6; }
+  .sms-info span { color: var(--warning); }
+  .btn-sms { width: 100%; padding: 13px; border-radius: 10px; font-size: 13px; font-family: var(--mono); font-weight: 500; cursor: pointer; border: 1px solid rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); color: var(--warning); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
+  .btn-sms:hover:not(:disabled) { background: rgba(251,191,36,0.15); border-color: var(--warning); }
+  .btn-sms:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-sms.sending { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.4); }
+  .sms-result { margin-top: 10px; font-size: 12px; font-family: var(--mono); padding: 10px 14px; border-radius: 8px; animation: fadeIn 0.2s ease; }
+  .sms-result.ok { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: var(--success); }
+  .sms-result.err { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); color: var(--danger); }
+
+  .spinner { width: 13px; height: 13px; border: 2px solid rgba(79,156,249,0.3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  .spinner-w { width: 13px; height: 13px; border: 2px solid rgba(251,191,36,0.3); border-top-color: var(--warning); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .status-msg { font-size: 12px; font-family: var(--mono); text-align: center; padding: 10px 14px; border-radius: 8px; margin-top: 10px; animation: fadeIn 0.2s ease; }
+  .status-ok { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: var(--success); }
+  .status-err { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); color: var(--danger); }
+  .recent-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+  .recent-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .recent-item:first-child { padding-top: 0; }
+  .recent-name { font-size: 13px; color: var(--text); }
+  .recent-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .recent-mcq { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+  .recent-marks { font-size: 13px; font-family: var(--mono); font-weight: 500; }
+  .recent-check { font-size: 11px; color: var(--success); }
+  .sms-one-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; width: 26px; height: 26px; font-size: 12px; color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+  .sms-one-btn:hover:not(:disabled) { background: rgba(79,156,249,0.12); border-color: var(--accent); }
+  .sms-one-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .recent-time { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <div class="logo-dot"></div>
+      <h1>MCQ Marks Entry</h1>
+    </div>
+    <p>2026 O/L Paper Class &nbsp;·&nbsp; 64 students</p>
+  </div>
+
+  <!-- URL -->
+  <div class="card">
+    <div class="card-label">Apps Script URL</div>
+    <div class="url-row">
+      <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/.../exec" />
+      <button class="btn-small" onclick="saveUrl()">Save</button>
+    </div>
+    <div class="url-status" id="url-status"></div>
+  </div>
+
+  <!-- MCQ -->
+  <div class="card">
+    <div class="card-label">MCQ Paper</div>
+    <div class="mcq-pills" id="mcq-pills">
+      <button class="mcq-pill active" onclick="selectMCQ('MCQ 01',this)">MCQ 01</button>
+      <button class="mcq-pill" onclick="selectMCQ('MCQ 02',this)">MCQ 02</button>
+      <button class="mcq-pill" onclick="selectMCQ('MCQ 03',this)">MCQ 03</button>
+      <button class="mcq-add" onclick="addMCQ()">+ Add</button>
+    </div>
+  </div>
+
+  <!-- Student Lookup -->
+  <div class="card">
+    <div class="active-mcq" id="active-badge">MCQ 01</div>
+    <div class="card-label">Index Number — Last 2 Digits</div>
+    <div class="id-input-row">
+      <div class="id-prefix">265340</div>
+      <div class="id-zero">0</div>
+      <input type="text" class="id-suffix" id="suffix" maxlength="2" placeholder="XX" oninput="lookup(this.value)" autocomplete="off" />
+    </div>
+    <div id="student-out"></div>
+  </div>
+
+  <!-- Marks -->
+  <div class="card" id="marks-card" style="display:none">
+    <div class="card-label" id="marks-label">Marks — MCQ 01</div>
+    <div class="marks-area">
+      <input type="number" class="marks-input" id="marks" min="0" max="40" placeholder="0" />
+      <div class="out-of">/ 40</div>
+    </div>
+    <button class="btn-submit" id="sub-btn" onclick="submitMarks()" disabled>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Submit to Sheet
+    </button>
+    <div id="sub-status"></div>
+  </div>
+
+  <!-- Send SMS Card -->
+  <div class="sms-card">
+    <div class="card-label">📨 Batch SMS</div>
+    <div class="sms-info">
+      සියලු students submit වුනාට පස්සේ<br/>
+      <span id="sms-mcq-label">MCQ 01</span> results සහිතව parents වලට SMS යවන්න.
+    </div>
+    <button class="btn-sms" id="sms-btn" onclick="sendBatchSMS()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.18 2 2 0 012.22.01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+      Send SMS to All Parents
+    </button>
+    <div id="sms-result"></div>
+  </div>
+
+  <!-- Recent -->
+  <div class="card" id="recent-card" style="display:none">
+    <div class="card-label">Recent Submissions</div>
+    <div id="recent-list"></div>
+  </div>
+
+</div>
+
+<script>
+const STUDENTS = {
+  "01": { name: "K.P. Suwindu Keshara",                    id: "26534001" },
+  "02": { name: "B.H. Kawthika Denuwan",                   id: "26534002" },
+  "03": { name: "K.A.D Hashini Deshani",                   id: "26534003" },
+  "04": { name: "Dasun Sampath",                           id: "26534004" },
+  "05": { name: "M.K Sharani Nirodya",                     id: "26534005" },
+  "06": { name: "M.Kawin",                                 id: "26534006" },
+  "07": { name: "B.G Mayumi Sithangi",                     id: "26534007" },
+  "08": { name: "Vihanga Nimsara",                         id: "26534008" },
+  "09": { name: "W. Ovindu Isansa",                        id: "26534009" },
+  "10": { name: "K.A.D. Lakitha Nimsara",                  id: "26534010" },
+  "11": { name: "D.G Janeesha Madhutharathi Thathsarani",  id: "26534011" },
+  "12": { name: "K.K Nethmi Imasha",                       id: "26534012" },
+  "13": { name: "K.A Nethuli Sathsara",                    id: "26534013" },
+  "14": { name: "Chanuga Isith",                           id: "26534014" },
+  "15": { name: "D.K Sasanjali Nethsarani",                id: "26534015" },
+  "16": { name: "H.V Ishini Umanda",                       id: "26534016" },
+  "17": { name: "E.H Ameesha Dulani",                      id: "26534017" },
+  "18": { name: "W.G Tharushi Dulmini",                    id: "26534018" },
+  "19": { name: "D.G Eksith Induwara",                     id: "26534019" },
+  "20": { name: "H.L. Pinidu Pinsara",                     id: "26534020" },
+  "21": { name: "A.V Wisula Pramudith",                    id: "26534021" },
+  "22": { name: "Lakpriya Sandipa",                        id: "26534022" },
+  "23": { name: "K.H Widurangi Wathsara",                  id: "26534023" },
+  "24": { name: "A.L Imasha Anuhas",                       id: "26534024" },
+  "25": { name: "O.V.P Imasha Rukshan",                    id: "26534025" },
+  "26": { name: "K.H.G Bhanuka Supem",                     id: "26534026" },
+  "27": { name: "Chanuka Ranhiru",                         id: "26534027" },
+  "28": { name: "N.G Thashmi Adhithya",                    id: "26534028" },
+  "29": { name: "W. Oshadee Sahanya",                      id: "26534029" },
+  "30": { name: "W.G Kemsara Dinuga",                      id: "26534030" },
+  "31": { name: "K.V Irudini Udeshika",                    id: "26534031" },
+  "32": { name: "W. Gimna Onari",                          id: "26534032" },
+  "33": { name: "R.H.M. Pathum Gimhana",                   id: "26534033" },
+  "34": { name: "Binara Hansana",                          id: "26534034" },
+  "35": { name: "W.M Himashi Nethara",                     id: "26534035" },
+  "36": { name: "H.H Githmi Methsarani",                   id: "26534036" },
+  "37": { name: "A.G Nethum Pabasara",                     id: "26534037" },
+  "38": { name: "A.G. Nesadu Senula",                      id: "26534038" },
+  "39": { name: "K.G.P Anuthmi Udana",                     id: "26534039" },
+  "40": { name: "G.W Dhananjana Sewwandi",                 id: "26534040" },
+  "41": { name: "T.H.V Asini Ahasna",                      id: "26534041" },
+  "42": { name: "A.M. Akash Induwara",                     id: "26534042" },
+  "43": { name: "K.V. Widura Madubashitha",                id: "26534043" },
+  "44": { name: "W. Himaka Adithya",                       id: "26534044" },
+  "45": { name: "M.G Aneja Indeewara",                     id: "26534045" },
+  "46": { name: "E.W Sashitha Viduranga",                  id: "26534046" },
+  "47": { name: "S. Maleesha",                             id: "26534047" },
+  "48": { name: "G.L Shenal Shammith",                     id: "26534048" },
+  "49": { name: "P.V Wathila Jayasanda",                   id: "26534049" },
+  "50": { name: "B. Vihanga Nimsara",                      id: "26534050" },
+  "51": { name: "Suranjith Isurusara",                     id: "26534051" },
+  "52": { name: "H.A Kushan Punsara",                      id: "26534052" },
+  "53": { name: "E.G Pinidu Sathsara",                     id: "26534053" },
+  "54": { name: "M.L.M Mayumi Kavindi",                    id: "26534054" },
+  "55": { name: "K.A.D Hasith Dilshan Devinda",            id: "26534055" },
+  "56": { name: "A. Amasha",                               id: "26534056" },
+  "57": { name: "M. Kaveesha Sandaruwani",                 id: "26534057" },
+  "58": { name: "U.V Jithuni Sithara",                       id: "26534058" },
+  "59": { name: "D.A Sanjula Himansi",                       id: "26534059" },
+  "61": { name: "D.L Nathidu Nethsara",                      id: "26534061" },
+  "62": { name: "T.V Sanduni Maheshika",                     id: "26534062" },
+  "63": { name: "Siharu Chathumina",                          id: "26534063" },
+  "64": { name: "E.A Anchitha Gimhan",                        id: "26534064" },
+  "60": { name: "L.G Tharushi Prabodha",                     id: "26534060" },
+};
+
+let cur = null, recent = [], scriptUrl = "", activeMCQ = "MCQ 01";
+let mcqList = ["MCQ 01","MCQ 02","MCQ 03"];
+
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('mcq_script_url');
+  if (saved) {
+    document.getElementById('script-url').value = saved;
+    scriptUrl = saved;
+    document.getElementById('url-status').textContent = '✓ URL loaded';
+  }
+});
+
+function saveUrl() {
+  scriptUrl = document.getElementById('script-url').value.trim();
+  if (scriptUrl) {
+    localStorage.setItem('mcq_script_url', scriptUrl);
+    document.getElementById('url-status').textContent = '✓ Saved!';
+  }
+}
+
+function selectMCQ(name, btn) {
+  activeMCQ = name;
+  document.getElementById('active-badge').textContent = name;
+  document.getElementById('marks-label').textContent = 'Marks — ' + name;
+  document.getElementById('sms-mcq-label').textContent = name;
+  document.querySelectorAll('.mcq-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sms-result').innerHTML = '';
+  reset();
+}
+
+function addMCQ() {
+  const next = mcqList.length + 1;
+  const name = 'MCQ ' + String(next).padStart(2,'0');
+  if (mcqList.includes(name)) return;
+  mcqList.push(name);
+  const pills = document.getElementById('mcq-pills');
+  const addBtn = pills.querySelector('.mcq-add');
+  const btn = document.createElement('button');
+  btn.className = 'mcq-pill';
+  btn.textContent = name;
+  btn.onclick = function(){ selectMCQ(name, this); };
+  pills.insertBefore(btn, addBtn);
+  selectMCQ(name, btn);
+}
+
+function lookup(v) {
+  const out = document.getElementById('student-out');
+  const mc = document.getElementById('marks-card');
+  if (v.length < 2) { out.innerHTML = ''; mc.style.display = 'none'; cur = null; return; }
+  const key = STUDENTS[v] ? v : v.padStart(2,'0');
+  const s = STUDENTS[key];
+  if (s) {
+    cur = s;
+    out.innerHTML = `<div class="result-box found">
+      <div class="result-icon">✓</div>
+      <div style="flex:1"><div class="result-name">${s.name}</div><div class="result-id">${s.id}</div></div>
+      <a href="report.html?id=${s.id}" target="_blank" class="view-graph-btn">📊 Graph</a>
+    </div>`;
+    mc.style.display = 'block';
+    document.getElementById('marks').value = '';
+    document.getElementById('sub-status').innerHTML = '';
+    document.getElementById('sub-btn').disabled = false;
+    setTimeout(() => document.getElementById('marks').focus(), 50);
+  } else {
+    cur = null;
+    const fullId = parseInt(v) <= 9 ? '26534000' + parseInt(v) : '2653400' + v;
+    out.innerHTML = `<div class="result-box notfound">
+      <div class="result-icon">✗</div>
+      <div class="result-err">Index "${fullId}" not found</div>
+    </div>`;
+    mc.style.display = 'none';
+  }
+}
+
+function submitMarks() {
+  if (!cur) return;
+  const marksVal = document.getElementById('marks').value;
+  const marks = parseFloat(marksVal);
+  const statusEl = document.getElementById('sub-status');
+
+  if (marksVal === '' || isNaN(marks)) {
+    statusEl.innerHTML = '<div class="status-msg status-err">Enter marks first!</div>';
+    return;
+  }
+  if (!scriptUrl) {
+    statusEl.innerHTML = '<div class="status-msg status-err">Save the Apps Script URL first!</div>';
+    return;
+  }
+
+  const payload = {
+    indexNumber: cur.id,
+    name: cur.name,
+    mcq: activeMCQ,
+    marks: marks,
+    timestamp: new Date().toLocaleString('en-GB')
+  };
+
+  const snapName  = cur.name;
+  const snapId    = cur.id;
+  const snapMarks = marks;
+  const snapMCQ   = activeMCQ;
+  const snapTime  = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+  // Immediately reset — next student enter කරන්න ready, wait නෑ
+  recent.unshift({ name: snapName, id: snapId, mcq: snapMCQ, marks: snapMarks, time: snapTime, pending: true });
+  if (recent.length > 8) recent.pop();
+  renderRecent();
+  reset();
+
+  // Background submit
+  fetch(scriptUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    const item = recent.find(r => r.name === snapName && r.marks === snapMarks && r.pending);
+    if (item) { item.pending = false; renderRecent(); }
+  }).catch(() => {
+    const item = recent.find(r => r.name === snapName && r.marks === snapMarks && r.pending);
+    if (item) { item.failed = true; item.pending = false; renderRecent(); }
+  });
+}
+
+async function sendBatchSMS() {
+  if (!scriptUrl) {
+    document.getElementById('sms-result').innerHTML = '<div class="sms-result err">Save the Apps Script URL first!</div>';
+    return;
+  }
+  const btn = document.getElementById('sms-btn');
+  const resultEl = document.getElementById('sms-result');
+
+  btn.disabled = true;
+  btn.classList.add('sending');
+  btn.innerHTML = '<div class="spinner-w"></div> Sending SMS... (this may take a while)';
+  resultEl.innerHTML = '';
+
+  try {
+    await fetch(scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'sendBatchSMS', mcq: activeMCQ })
+    });
+    // no-cors mode — response read කරන්න බෑ, ඒත් Apps Script SMS process කරනවා
+    resultEl.innerHTML = `<div class="sms-result ok">
+      ✓ SMS request sent for ${activeMCQ}!<br/>
+      <span style="font-size:11px;opacity:0.8">Apps Script background එකේ SMS process වෙනවා.<br/>Students ~57 නිසා ටිකක් time යයි (1-2 min).</span>
+    </div>`;
+  } catch(err) {
+    resultEl.innerHTML = `<div class="sms-result err">Error: ${err.message}</div>`;
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('sending');
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.18 2 2 0 012.22.01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg> Send SMS to All Parents';
+}
+
+async function sendSingleSMS(indexId, mcq, btnEl) {
+  if (!scriptUrl) {
+    alert('Save the Apps Script URL first!');
+    return;
+  }
+  btnEl.disabled = true;
+  const originalHTML = btnEl.innerHTML;
+  btnEl.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    await fetch(scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'sendSingleSMS', indexNumber: indexId, mcq: mcq })
+    });
+    btnEl.innerHTML = '✓';
+    btnEl.style.color = 'var(--success)';
+  } catch(err) {
+    btnEl.innerHTML = '✗';
+    btnEl.style.color = 'var(--danger)';
+    btnEl.disabled = false;
+  }
+}
+
+function reset() {
+  document.getElementById('suffix').value = '';
+  document.getElementById('student-out').innerHTML = '';
+  document.getElementById('marks-card').style.display = 'none';
+  document.getElementById('sub-status').innerHTML = '';
+  cur = null;
+  document.getElementById('suffix').focus();
+}
+
+function renderRecent() {
+  const card = document.getElementById('recent-card');
+  const list = document.getElementById('recent-list');
+  if (!recent.length) { card.style.display='none'; return; }
+  card.style.display = 'block';
+  list.innerHTML = recent.map((r, idx) => `
+    <div class="recent-item">
+      <div class="recent-name">${r.name}</div>
+      <div class="recent-meta">
+        <span class="recent-mcq">${r.mcq}</span>
+        <span class="recent-marks">${r.marks}/40</span>
+        ${r.failed
+          ? '<span style="font-size:11px;color:var(--danger)">✗ failed</span>'
+          : r.pending
+            ? '<span style="font-size:11px;color:var(--warning)">⟳</span>'
+            : '<span class="recent-check">✓</span>'
+        }
+        <span class="recent-time">${r.time}</span>
+        <button class="sms-one-btn" title="Send SMS to this student" onclick="sendSingleSMS('${r.id}','${r.mcq}',this)">✉</button>
+      </div>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
