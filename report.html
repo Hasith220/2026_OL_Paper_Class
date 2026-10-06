@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>2026 O/L Paper Class Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Abhaya+Libre:wght@500;700;800&family=Yaldevi:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #fbf9f4;
+    --border: #e5e1d8;
+    --accent: #2563eb;
+    --accent-soft: #eef3ff;
+    --success: #059669;
+    --success-soft: #ecfdf5;
+    --danger: #dc2626;
+    --danger-soft: #fef2f2;
+    --warning: #d97706;
+    --warning-soft: #fffbeb;
+    --purple: #7c3aed;
+    --purple-soft: #f5f3ff;
+    --text: #1f2937;
+    --text-soft: #4b5563;
+    --muted: #8b8577;
+    --mono: 'DM Mono', 'Noto Sans Mono', monospace;
+    --heading: 'Abhaya Libre', 'Noto Sans Sinhala', 'Iskoola Pota', 'Nirmala UI', 'Yaldevi', sans-serif;
+    --body: 'Yaldevi', 'Noto Sans Sinhala', 'Iskoola Pota', 'Nirmala UI', 'Noto Sans', sans-serif;
+    --label: 'Noto Sans Sinhala', 'Iskoola Pota', 'Nirmala UI', 'Yaldevi', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    height: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  html { font-size: 16px; }
+  body {
+    padding: 0.9rem 0.85rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    background-image: radial-gradient(circle at 15% 10%, #eef3ff 0%, transparent 45%), radial-gradient(circle at 85% 85%, #f5f3ff 0%, transparent 45%);
+  }
+  .app { width: 100%; max-width: 1200px; margin: 0 auto; }
+
+  .countdown-banner {
+    background: linear-gradient(135deg, #fff5f5, #fffaf0);
+    border: 1.5px solid #fecaca;
+    border-radius: 16px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 0.9rem;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 10px rgba(220,38,38,0.06);
+  }
+  .countdown-label { font-family: var(--heading); font-size: 15px; letter-spacing: 0.3px; color: var(--danger); font-weight: 700; }
+  .countdown-units { display: flex; gap: 16px; }
+  .countdown-unit { text-align: center; }
+  .countdown-num { font-size: 28px; font-weight: 700; font-family: var(--mono); color: var(--text); line-height: 1; }
+  .countdown-tag { font-family: var(--label); font-size: 11px; color: var(--muted); font-weight: 500; }
+  .countdown-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  .header { text-align: center; margin-bottom: 0.85rem; padding-bottom: 0.7rem; border-bottom: 2px solid var(--border); }
+  .school-tag { display: inline-block; font-family: var(--label); font-size: 12px; letter-spacing: 1px; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
+  .student-name { font-family: var(--heading); font-size: 30px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .student-id { font-size: 13px; font-family: var(--mono); color: var(--muted); }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 0.85rem;
+    align-items: start;
+  }
+  .col { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .stat-val { font-size: 27px; font-weight: 700; font-family: var(--mono); margin-bottom: 3px; line-height: 1; }
+  .stat-label { font-family: var(--label); font-size: 12.5px; color: var(--text-soft); font-weight: 500; }
+  .stat-card.avg { background: var(--accent-soft); border-color: #c7d9fb; }
+  .stat-card.avg .stat-val { color: var(--accent); }
+  .stat-card.rank { background: var(--warning-soft); border-color: #fde3ad; }
+  .stat-card.rank .stat-val { color: var(--warning); }
+  .stat-card.papers { background: var(--success-soft); border-color: #b8e6cf; }
+  .stat-card.papers .stat-val { color: var(--success); }
+  .stat-card.predicted { background: var(--purple-soft); border-color: #ddd2fb; }
+  .stat-card.predicted .stat-val { color: var(--purple); }
+
+  .predicted-card {
+    grid-column: span 2;
+    background: linear-gradient(135deg, #f5f3ff, #eef3ff);
+    border: 1.5px solid #ddd2fb;
+  }
+  .predicted-sub { display: flex; justify-content: center; gap: 20px; margin-top: 6px; font-family: var(--mono); font-size: 13px; color: var(--text-soft); }
+  .predicted-sub span b { color: var(--text); font-size: 15px; }
+
+  .chart-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .chart-title { font-family: var(--heading); font-size: 16px; color: var(--text); margin-bottom: 10px; font-weight: 700; }
+  .chart-wrap { position: relative; height: 250px; }
+
+  .breakdown-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .breakdown-title { font-family: var(--heading); font-size: 16px; color: var(--text); margin-bottom: 10px; font-weight: 700; }
+  .mcq-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+  .mcq-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .mcq-name { font-size: 13px; font-family: var(--mono); color: var(--text-soft); width: 58px; flex-shrink: 0; font-weight: 500; }
+  .mcq-bar-wrap { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .mcq-bar { height: 100%; border-radius: 4px; }
+  .mcq-marks { font-size: 14px; font-family: var(--mono); font-weight: 700; width: 48px; text-align: right; flex-shrink: 0; }
+  .mcq-rank { font-size: 12px; font-family: var(--mono); color: var(--muted); width: 34px; text-align: right; flex-shrink: 0; }
+
+  .legend { display: flex; gap: 18px; margin-bottom: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-family: var(--label); font-size: 12.5px; color: var(--text-soft); font-weight: 500; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .legend-line { width: 14px; height: 2px; border-top: 2px dashed var(--danger); flex-shrink: 0; }
+
+  .footer { text-align: center; font-family: var(--label); font-size: 11px; color: var(--muted); margin-top: 0.7rem; }
+
+  .pdf-btn-wrap { display: flex; justify-content: center; margin-top: 0.9rem; }
+  .pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 26px;
+    font-family: var(--label);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(37,99,235,0.28);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  }
+  .pdf-btn:hover { background: #1d4ed8; box-shadow: 0 5px 14px rgba(37,99,235,0.35); transform: translateY(-1px); }
+  .pdf-btn:active { transform: translateY(0); }
+  .pdf-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .pdf-btn svg { flex-shrink: 0; }
+  .pdf-spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+  .loading {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #12141c;
+    overflow: hidden;
+  }
+  .loading-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('class-photo.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(14px) brightness(0.45) saturate(1.1);
+    transform: scale(1.1);
+  }
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(13,15,20,0.55) 0%, rgba(13,15,20,0.75) 100%);
+  }
+  .loading-content { position: relative; z-index: 2; padding: 1.5rem; }
+  .loading-welcome-tag {
+    font-family: var(--label);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 14px;
+  }
+  .loading-welcome-title {
+    font-family: var(--heading);
+    font-size: clamp(28px, 6vw, 46px);
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+  .loading-welcome-sub {
+    font-family: var(--body);
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 28px;
+  }
+  .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.25); border-top-color: #ffffff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+  .loading p { font-family: var(--label); font-size: 13px; color: rgba(255,255,255,0.75); }
+  .error-box { background: var(--danger-soft); border: 1.5px solid #fecaca; border-radius: 14px; padding: 1.5rem; text-align: center; }
+  .error-box p { font-family: var(--label); font-size: 14px; color: var(--danger); }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 720px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .chart-wrap { height: 230px; }
+    .countdown-units { gap: 10px; }
+    .countdown-num { font-size: 23px; }
+    .student-name { font-size: 25px; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="loading">
+    <div class="loading-bg"></div>
+    <div class="loading-overlay"></div>
+    <div class="loading-content">
+      <div class="loading-welcome-tag">2026 O/L Paper Class</div>
+      <div class="loading-welcome-title">Welcome<br/></div>
+      <div class="loading-welcome-sub">Your Report is processing...</div>
+      <div class="loading-spinner"></div>
+      <p>Loading Report</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytk_Q1dGxMxeaNByjKftHFfGGQUj7vPkPcX-86pTCBOqXX-3lkXhxTSJXTaZAC6mwe/exec";
+const EXAM_DATE = new Date("2026-12-08T08:30:00");
+
+function getCountdownHTML() {
+  const now = new Date();
+  const diff = EXAM_DATE - now;
+
+  if (diff <= 0) {
+    return `<div class="countdown-banner"><div class="countdown-label">O/L exam has started!</div></div>`;
+  }
+
+  const days    = Math.floor(diff / (1000*60*60*24));
+  const hours   = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  return `
+    <div class="countdown-banner" id="countdown-banner">
+      <div class="countdown-label">Time left for O/L Exam</div>
+      <div class="countdown-units">
+        <div class="countdown-unit"><div class="countdown-num">${days}</div><div class="countdown-tag">Days</div></div>
+        <div class="countdown-unit"><div class="countdown-num">${String(hours).padStart(2,'0')}</div><div class="countdown-tag">Hours</div></div>
+        <div class="countdown-unit"><div class="countdown-num">${String(minutes).padStart(2,'0')}</div><div class="countdown-tag">Minutes</div></div>
+        <div class="countdown-unit"><div class="countdown-num">${String(seconds).padStart(2,'0')}</div><div class="countdown-tag">Seconds</div></div>
+      </div>
+      <div class="countdown-date">December 8, 2026 &middot; 8.30 a.m</div>
+    </div>
+  `;
+}
+
+function updateCountdownLive() {
+  const banner = document.getElementById('countdown-banner');
+  if (!banner) return;
+  banner.outerHTML = getCountdownHTML();
+}
+setInterval(updateCountdownLive, 1000);
+
+async function loadReport() {
+  const params = new URLSearchParams(window.location.search);
+  const studentId = params.get("id");
+  const app = document.getElementById("app");
+
+  if (!studentId) {
+    app.innerHTML = `<div class="error-box"><p>No student ID provided.</p></div>`;
+    return;
+  }
+
+  try {
+    const res = await fetch(SCRIPT_URL + "?id=" + studentId);
+    const data = await res.json();
+
+    if (data.error) {
+      app.innerHTML = `<div class="error-box"><p>Error: ${data.error}</p></div>`;
+      return;
+    }
+
+    renderReport(data);
+  } catch(err) {
+    app.innerHTML = `<div class="error-box"><p>Loading Failed.<br/>${err.message}</p></div>`;
+  }
+}
+
+function renderReport(data) {
+  const app = document.getElementById("app");
+  const mcqs = data.mcqData.filter(m => m.marks !== null);
+  const paperCount = mcqs.length;
+
+  const mcqAvg = parseFloat(data.overallAvg) || 0;
+  const mcqPct = mcqAvg / 40;
+  const predictedEssay = Math.round(mcqPct * 60 * 10) / 10;
+  const predictedTotal = Math.round((mcqAvg + predictedEssay) * 10) / 10;
+
+  app.innerHTML = `
+    ${getCountdownHTML()}
+
+    <div class="header">
+      <div class="school-tag">2026 O/L Paper Class &middot; Hasith Sir</div>
+      <div class="student-name">${data.name}</div>
+      <div class="student-id">${data.id}</div>
+    </div>
+
+    <div class="main-grid">
+      <div class="col">
+        <div class="stats-row">
+          <div class="stat-card avg">
+            <div class="stat-val">${data.overallAvg}<span style="font-size:14px;opacity:0.55">/40</span></div>
+            <div class="stat-label">MCQ Average</div>
+          </div>
+          <div class="stat-card rank">
+            <div class="stat-val">${data.rank}<span style="font-size:14px;opacity:0.55">/${data.totalStudents}</span></div>
+            <div class="stat-label">Rank</div>
+          </div>
+          <div class="stat-card papers">
+            <div class="stat-val">${paperCount}</div>
+            <div class="stat-label">Papers Done</div>
+          </div>
+          <div class="stat-card predicted">
+            <div class="stat-val">${predictedTotal}<span style="font-size:14px;opacity:0.55">/100</span></div>
+            <div class="stat-label">Predicted Total</div>
+          </div>
+          <div class="stat-card predicted-card">
+            <div class="stat-label" style="margin-bottom:4px">Predicted Breakdown</div>
+            <div class="predicted-sub">
+              <span>MCQ (40): <b>${mcqAvg}</b></span>
+              <span>Essay (60, est.): <b>${predictedEssay}</b></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="breakdown-card">
+          <div class="breakdown-title">MCQ Breakdown</div>
+          ${mcqs.map(m => {
+            const pct = (m.marks / 40) * 100;
+            const color = m.marks >= 31 ? '#059669' : m.marks >= 21 ? '#2563eb' : m.marks >= 11 ? '#d97706' : '#dc2626';
+            return `<div class="mcq-row">
+              <div class="mcq-name">${m.name}</div>
+              <div class="mcq-bar-wrap"><div class="mcq-bar" style="width:${pct}%;background:${color}"></div></div>
+              <div class="mcq-marks" style="color:${color}">${m.marks}/40</div>
+              <div class="mcq-rank">#${m.rank}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="chart-card">
+          <div class="chart-title">Performance Chart</div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div>Your Marks</div>
+            <div class="legend-item"><div class="legend-line"></div>Class Average</div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pdf-btn-wrap">
+      <button class="pdf-btn" id="pdf-btn" onclick="downloadPDF()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span id="pdf-btn-text">Download PDF</span>
+      </button>
+    </div>
+
+    <div class="footer">
+      Generated by Hasith Sir &copy; 2026 O/L Paper Class
+    </div>
+  `;
+
+  const labels   = data.mcqData.map(m => m.name);
+  const marks    = data.mcqData.map(m => m.marks);
+  const classAvg = data.mcqData.map(m => m.classAvg);
+
+  new Chart(document.getElementById("chart"), {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Your Marks",
+          data: marks,
+          backgroundColor: marks.map(m =>
+            m === null ? 'transparent' :
+            m >= 31 ? 'rgba(5,150,105,0.85)' :
+            m >= 21 ? 'rgba(37,99,235,0.85)' :
+            m >= 11 ? 'rgba(217,119,6,0.85)' :
+            'rgba(220,38,38,0.85)'
+          ),
+          borderRadius: 6,
+          borderSkipped: false,
+          order: 2
+        },
+        {
+          type: "line",
+          label: "Class Average",
+          data: classAvg,
+          borderColor: "#dc2626",
+          backgroundColor: "transparent",
+          borderWidth: 2.5,
+          borderDash: [5,4],
+          pointBackgroundColor: "#dc2626",
+          pointBorderColor: "#ffffff",
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          titleFont: { size: 13, family: "DM Mono" },
+          bodyFont: { size: 13, family: "DM Mono" },
+          callbacks: {
+            label: ctx => ctx.dataset.label + ": " + ctx.raw + "/40"
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 0, max: 40,
+          ticks: { color: "#8b8577", font: { family: "DM Mono", size: 12, weight: 500 }, stepSize: 10 },
+          grid: { color: "#e5e1d8" },
+          border: { display: false }
+        },
+        x: {
+          ticks: { color: "#8b8577", font: { family: "DM Mono", size: 12, weight: 500 } },
+          grid: { display: false },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+async function downloadPDF() {
+  const btn = document.getElementById('pdf-btn');
+  const btnText = document.getElementById('pdf-btn-text');
+  const target = document.querySelector('.app');
+
+  btn.disabled = true;
+  const originalHTML = btn.innerHTML;
+  btn.innerHTML = '<div class="pdf-spinner"></div><span>Preparing...</span>';
+
+  const btnWrap = document.querySelector('.pdf-btn-wrap');
+  btnWrap.style.visibility = 'hidden';
+
+  try {
+    const canvas = await html2canvas(target, {
+      scale: 2,
+      backgroundColor: '#f7f5f0',
+      useCORS: true,
+      allowTaint: true
+    });
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const { jsPDF } = window.jspdf;
+
+    const pxToMm = px => px * 0.264583;
+    const pdfWidth = pxToMm(canvas.width / 2);
+    const pdfHeight = pxToMm(canvas.height / 2);
+
+    const orientation = pdfWidth > pdfHeight ? 'landscape' : 'portrait';
+    const pdf = new jsPDF({
+      orientation,
+      unit: 'mm',
+      format: [pdfWidth, pdfHeight]
+    });
+
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('id') || 'student';
+    pdf.save('OL-Report-' + studentId + '.pdf');
+
+  } catch (err) {
+    alert('PDF generation failed: ' + err.message);
+  }
+
+  btnWrap.style.visibility = 'visible';
+  btn.disabled = false;
+  btn.innerHTML = originalHTML;
+}
+
+loadReport();
+</script>
+</body>
+</html>
