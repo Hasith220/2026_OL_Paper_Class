@@ -1,6 +1,6 @@
 /* Public configuration. NEVER put a teacher key or SMS credentials here. */
 window.PAPER_CLASS_CONFIG = Object.freeze({
-  scriptUrl: 'https://script.google.com/macros/s/AKfycbytk_Q1dGxMxeaNByjKftHFfGGQUj7vPkPcX-86pTCBOqXX-3lkXhxTSJXTaZAC6mwe/exec',
+  scriptUrl: 'https://script.google.com/macros/s/AKfycbx3cYkYnGkapwWira_ChRwUv9ytcfZSFlIFlRhQNnfdg_b-2hB6u1KulaUxgHBmvvSj/exec',
   className: '2026 O/L Paper Class',
   teacherName: 'Hasith Sir',
   subject: 'Science',
