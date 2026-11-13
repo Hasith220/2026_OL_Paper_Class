@@ -8,6 +8,11 @@ window.PAPER_CLASS_CONFIG = Object.freeze({
   examDate: '2026-12-08T08:30:00+05:30',
   examLabel: 'O/L exam target',
   introImage: 'https://hasith220.github.io/2026_OL_Paper_Class/class-photo.jpg',
+  // Upload prize-01.jpg ... prize-12.jpg to the main repository root. Missing photos are skipped.
+  gallery: {
+    baseUrl: 'https://hasith220.github.io/2026_OL_Paper_Class/',
+    count: 12
+  },
   // These are your class reporting bands, and can be edited.
   grades: [
     {min:75,label:'A'}, {min:65,label:'B'}, {min:55,label:'C'},
