@@ -41,11 +41,21 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 @media(prefers-reduced-motion:reduce){.award-large-trophy,.award-confetti i,.gallery-card.loading{animation:none!important}.gallery-card img{transition:none}.award-confetti{display:none}}
 @media print{.award-dialog,.gallery-section,.gallery-lightbox{display:none!important}.achievement-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.achievement-card{padding:10px;gap:8px}.achievement-trophy{width:30px}.achievement-card h3{font-size:11px}.achievement-card p,.award-eyebrow{font-size:9px}.award-replay{display:none}.achievements-section{break-inside:avoid}}
 
+/* Frame both people and the prize, keeping captions below the photograph. */
+.gallery-card{aspect-ratio:auto;border:1px solid var(--line);background:#fff}
+.gallery-card img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 12%;transform:none}
+.gallery-card:nth-child(1) img{object-position:50% 16%}
+.gallery-card:nth-child(2) img{object-position:50% 22%}
+.gallery-card:nth-child(3) img,.gallery-card:nth-child(4) img{object-position:50% 8%}
+.gallery-card>span{position:static;display:block;inset:auto;padding:12px 15px;background:#fff;color:var(--navy);font-size:13px;line-height:1.5}
+.gallery-card:hover img{transform:none}
+@media(max-width:680px){.gallery-card>span{font-size:11px;padding:10px}}
+
 </style>
 </head>
 <body>
 <div id="report-intro" class="report-intro no-print" role="status" aria-label="Opening your class report"><img id="intro-photo" src="class-photo.jpg" alt="" fetchpriority="high"><div class="intro-shade"></div><div class="intro-copy"><span class="intro-kicker">HASITH SIR · SCIENCE</span><h1>Your effort.<br>Your progress.</h1><p>Every assessment. A clearer direction.</p><div class="intro-loading"><span class="intro-spinner"></span>Opening your report</div></div><button id="skip-intro" class="intro-skip" aria-label="Skip the opening animation">Skip intro →</button></div>
-<main data-ui-version="2.3.0" class="report-shell" id="report-shell">
+<main data-ui-version="2.3.1" class="report-shell" id="report-shell">
   <header class="row spread report-top"><div class="brand"><span class="brand-mark supplied-logo" role="img" aria-label="Hasith Dilshan Science logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="505 180 1030 1305" aria-hidden="true"><image href="logo.jpg?v=2.3.0" width="2048" height="2048"/></svg></span><div><strong style="color:var(--navy)" id="report-brand">Hasith Sir</strong><small style="color:var(--muted)">SCIENCE · STUDENT PROGRESS</small></div></div><div class="row no-print"><button class="button" id="reload-report">↻ Refresh</button><button class="button primary" id="print-report" disabled>Print / Save PDF</button></div></header>
   <section id="countdown" class="exam-countdown" aria-label="Exam countdown"></section>
   <div id="notice" class="notice info" role="status" aria-live="polite">Loading your results…</div>
@@ -75,7 +85,7 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 <dialog id="award-dialog" class="award-dialog"><div class="award-confetti" id="award-confetti" aria-hidden="true"></div><div class="award-content"><p class="award-eyebrow">Celebrating excellence</p><div class="award-large-trophy" id="award-trophy"></div><h2 id="award-place"></h2><h3 id="award-name"></h3><p class="award-paper" id="award-paper"></p><p class="award-score" id="award-score"></p><p class="award-message" id="award-message"></p><p class="small muted" id="award-counter"></p><div class="award-actions"><button class="button" id="award-next">Next achievement</button><button class="button primary" id="award-close">View report</button></div></div></dialog>
 <dialog id="gallery-dialog" class="gallery-lightbox"><header class="row spread"><strong>Moments of achievement</strong><button class="button slim" id="gallery-close">Close</button></header><img id="gallery-full-image" alt=""><footer class="row spread"><button class="button slim" id="gallery-prev" aria-label="Previous photo">← Previous</button><div><p id="gallery-full-caption"></p><p class="small muted" id="gallery-position"></p></div><button class="button slim" id="gallery-next" aria-label="Next photo">Next →</button></footer></dialog>
 
-<script src="config.js?v=2.3.0"></script>
+<script src="config.js?v=2.3.1"></script>
 <script>
 'use strict';
 window.PCUI = (() => {
