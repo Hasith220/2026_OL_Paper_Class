@@ -5,7 +5,9 @@ window.PAPER_CLASS_CONFIG = Object.freeze({
   teacherName: 'Hasith Sir',
   subject: 'Science',
   // Optional. Set a verified date with +05:30, or leave blank to hide the countdown.
-  examDate: '',
+  examDate: '2026-12-08T08:30:00+05:30',
+  examLabel: 'O/L exam target',
+  introImage: 'https://hasith220.github.io/2026_OL_Paper_Class/class-photo.jpg',
   // These are your class reporting bands, and can be edited.
   grades: [
     {min:75,label:'A'}, {min:65,label:'B'}, {min:55,label:'C'},
