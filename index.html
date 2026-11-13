@@ -44,7 +44,7 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 </style>
 </head>
 <body>
-<div class="admin-shell" data-ui-version="2.3.0">
+<div class="admin-shell" data-ui-version="2.3.1">
   <aside class="sidebar">
     <div class="brand"><span class="brand-mark supplied-logo" role="img" aria-label="Hasith Dilshan Science logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="505 180 1030 1305" aria-hidden="true"><image href="logo.jpg?v=2.3.0" width="2048" height="2048"/></svg></span><div><strong>Hasith Sir</strong><small>SCIENCE · 2026 O/L</small></div></div>
     <div class="side-section"><div class="side-label">Teacher workspace</div><div class="nav-item selected">▦ &nbsp; Marks entry</div><p>MCQ practice & full paper results, in one place.</p></div>
@@ -87,13 +87,13 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
   </main>
 </div>
 <dialog id="paper-dialog"><form id="new-paper-form"><div class="eyebrow">Create assessment</div><h2 style="margin:6px 0 20px">New paper</h2><div class="form-grid"><div class="span2"><label for="paper-name">Paper name</label><input id="paper-name" maxlength="45" required placeholder="Full Paper 01"></div><div><label for="paper-type">Paper type</label><select id="paper-type"><option value="FULL">Full Paper — /200 → /100</option><option value="MCQ">MCQ practice</option></select></div><div><label for="paper-date">Paper date</label><input id="paper-date" type="date" required></div><div id="practice-max-wrap" hidden><label for="practice-max">MCQ maximum</label><select id="practice-max"><option value="40">40 marks</option><option value="80">80 marks</option></select></div></div><p class="small muted" style="margin-top:17px">Full Paper: MCQ /80 + Structured /60 + Essay /60. Final = total ÷ 2.</p><div id="paper-error" class="notice error" hidden></div><div class="dialog-foot"><button type="button" class="button" data-close="paper-dialog">Cancel</button><button type="submit" class="button primary" id="create-paper">Create paper</button></div></form></dialog>
-<dialog id="sms-dialog"><div class="row spread"><div><div class="eyebrow">Parent updates</div><h2>SMS preview</h2></div><button class="button slim" id="sms-history">Recent status</button><button class="button slim" id="sms-copy">Copy diagnostics</button><button class="button slim" id="sms-close" data-close="sms-dialog">Close</button></div><p class="sms-stats" id="sms-counts"></p><label for="sms-recipient">Preview recipient</label><select id="sms-recipient"></select><pre class="preview-text" id="sms-message"></pre><p class="small muted" id="sms-length"></p><div id="sms-note" class="notice info" style="margin-top:14px">Review recipients and message content before sending.</div><div class="dialog-foot"><button class="button" id="sms-stop" hidden>Stop after current</button><button class="button primary" id="sms-send">Send ready messages</button></div><p class="small" id="sms-progress" aria-live="polite"></p><p class="small muted sms-delivery-note">Gateway acceptance does not confirm handset delivery. Review the provider delivery report.</p><div id="sms-details" class="sms-details" aria-live="polite"></div></dialog>
+<dialog id="sms-dialog"><div class="row spread"><div><div class="eyebrow">Parent updates</div><h2>SMS preview</h2></div><button class="button slim" id="sms-history">Recent status</button><button class="button slim" id="sms-copy">Copy diagnostics</button><button class="button slim" id="sms-close" data-close="sms-dialog">Close</button></div><p class="sms-stats" id="sms-counts"></p><label for="sms-recipient">Preview recipient</label><select id="sms-recipient"></select><pre class="preview-text" id="sms-message"></pre><p class="small muted" id="sms-length"></p><div id="sms-note" class="notice info" style="margin-top:14px">Review recipients and message content before sending.</div><div class="dialog-foot"><button class="button" id="sms-stop" hidden>Stop after current</button><button class="button" id="sms-retry" hidden>Retry selected SMS</button><button class="button primary" id="sms-send">Send ready messages</button></div><p class="small" id="sms-progress" aria-live="polite"></p><p class="small muted sms-delivery-note">Gateway acceptance does not confirm handset delivery. Review the provider delivery report.</p><div id="sms-details" class="sms-details" aria-live="polite"></div></dialog>
 
 <dialog id="exam-dialog"><form id="exam-form"><div class="eyebrow">Sri Lanka time · +05:30</div><h2>Exam countdown settings</h2><p class="small muted" style="margin:12px 0 18px">Manage the countdown displayed on student reports.</p><label for="exam-label">Countdown label</label><input id="exam-label" maxlength="60" required><label for="exam-date" style="margin-top:15px">Date and start time</label><input id="exam-date" type="datetime-local" required><div id="exam-error" class="notice error" hidden></div><div class="dialog-foot"><button type="button" class="button" data-close="exam-dialog">Cancel</button><button type="submit" class="button primary" id="exam-save">Save date</button></div></form></dialog>
 
 <dialog id="sms-settings-dialog"><form id="sms-settings-form"><div class="eyebrow">Messaging configuration</div><h2>SMS settings</h2><p class="small muted" style="margin:14px 0">Use the sender ID approved for your WebSMS account.</p><label for="sms-sender">Approved sender ID</label><input id="sms-sender" maxlength="11" required autocomplete="off"><p class="small muted" id="sms-config-status" style="margin-top:12px"></p><div id="sms-settings-error" class="notice error" hidden></div><div class="dialog-foot"><a class="button" href="https://cloud.websms.lk/" target="_blank" rel="noopener">Open WebSMS ↗</a><button type="button" class="button" data-close="sms-settings-dialog">Cancel</button><button type="submit" class="button primary" id="sms-settings-save">Save sender</button></div></form></dialog>
 
-<script src="config.js?v=2.3.0"></script>
+<script src="config.js?v=2.3.1"></script>
 <script>
 'use strict';
 window.PCUI = (() => {
@@ -278,7 +278,7 @@ window.PCUI = (() => {
     $('paper-select').value=selected||'';
     await loadPaper(selected,data.selectedPaperId===selected?data.paperRecords:null);
     if(previousStudent&&data.students.some(s=>s.id===previousStudent))selectStudent(previousStudent,false);
-    if(!String(data.version).startsWith('2.3.'))U.notify('Update Code.gs and deploy New version to enable the updated SMS format and delivery diagnostics.',true);
+    if(String(data.version)!=='2.3.1')U.notify('Update Code.gs and deploy New version to enable the updated SMS format and delivery diagnostics.',true);
   }
   function storeJobs(){try{localStorage.setItem(outboxKey,JSON.stringify(jobs.map(j=>({...j,state:j.state==='SAVING'?'WAITING':j.state}))));}catch(_){U.notify('The browser could not keep an outbox backup. Keep this page open until all saves finish.',true);}}
   function restoreJobs(){try{const saved=JSON.parse(localStorage.getItem(outboxKey)||'[]');jobs=Array.isArray(saved)?saved.filter(j=>j.payload&&j.record&&j.receipt).map(j=>({...j,state:j.state==='FAILED'?'FAILED':'WAITING'})):[];}catch(_){jobs=[];}renderSync();}
@@ -423,26 +423,30 @@ window.PCUI = (() => {
     $('sms-length').textContent=est?item.phoneMasked+' · '+item.message.length+'/149 characters · '+est.encoding+' · '+est.parts+' SMS part(s)':'';
     $('sms-send').textContent=(canSendSMS?'Send ':'Publish & send ')+ready+' message'+(ready===1?'':'s');
     $('sms-send').disabled=!ready||!data.smsConfigured||sending||previewLoading;
+    $('sms-retry').hidden=!item||!item.canRetry;
+    $('sms-retry').disabled=sending||previewLoading||!data.smsConfigured;
     if(!data.smsConfigured)$('sms-progress').textContent='SMS is not configured. Contact your system administrator.';
   }
-  async function sendSMS(){
-    const ready=smsItems.filter(s=>s.status==='READY');
+  async function sendSMS(retrySelected=false){
+    const selected=smsItems[Number($('sms-recipient').value)];
+    const ready=retrySelected?(selected&&selected.canRetry?[selected]:[]):smsItems.filter(s=>s.status==='READY');
     if(sending||!ready.length)return;
-    if(!confirm((canSendSMS?'Send ':'Publish these saved results and send ')+ready.length+' parent message(s) now? SMS gateway charges may apply.'))return;
-    sending=true;stopSMS=false;$('sms-close').disabled=true;$('sms-recipient').disabled=true;$('sms-stop').hidden=false;$('sms-send').disabled=true;
-    let accepted=0,delivered=0,failed=0,uncertain=0;
+    if(!confirm(retrySelected?'Send this SMS again to '+selected.name+'? Continue only if the previous message did not arrive and you checked provider history. A duplicate SMS may be charged.':(canSendSMS?'Send ':'Publish these saved results and send ')+ready.length+' parent message(s) now? SMS gateway charges may apply.'))return;
+    sending=true;stopSMS=false;$('sms-close').disabled=true;$('sms-recipient').disabled=true;$('sms-stop').hidden=false;$('sms-send').disabled=true;$('sms-retry').disabled=true;
+    let accepted=0,delivered=0,failed=0,uncertain=0,skipped=0;
     try{
       if(!canSendSMS){await api('publishPaper',{paperId:paper.id,published:true});paper.published=true;canSendSMS=true;renderPaper();}
       for(let i=0;i<ready.length;i++){
         if(stopSMS)break;
         const item=ready[i];$('sms-progress').textContent='Processing '+(i+1)+'/'+ready.length+' · '+item.name+'…';
         try{
-          const result=await api('sendSMS',{paperId:paper.id,index:item.index,fingerprint:item.fingerprint});item.status=result.status;
+          const result=await api('sendSMS',{paperId:paper.id,index:item.index,fingerprint:item.fingerprint,retryConfirmed:retrySelected});item.status=result.status;item.canRetry=['ACCEPTED','UNVERIFIED'].includes(result.status);
+          if(result.skipped){skipped++;continue;}
           if(result.status==='DELIVERED')delivered++;else if(result.status==='ACCEPTED')accepted++;else if(result.status==='FAILED')failed++;else if(result.status==='UNVERIFIED'){uncertain++;stopSMS=true;}
           if(result.detail)$('sms-details').innerHTML+='<div class="sms-diagnostic"><strong>'+e(item.name)+' · '+e(result.status)+' · HTTP '+e(result.httpCode||'—')+'</strong><p>'+e(result.detail)+'</p></div>';
         }catch(err){uncertain++;stopSMS=true;item.status='UNVERIFIED';$('sms-progress').textContent=err.message;throw err;}
       }
-      $('sms-progress').textContent='Gateway accepted: '+accepted+' · Delivered: '+delivered+' · Failed: '+failed+' · Unverified: '+uncertain+(stopSMS?' · Stopped. Check SMSLog before retrying uncertain messages.':' · Finished.');
+      $('sms-progress').textContent='Gateway accepted: '+accepted+' · Delivered: '+delivered+' · Failed: '+failed+' · Unverified: '+uncertain+' · Skipped: '+skipped+(stopSMS?' · Stopped. Check SMSLog before retrying uncertain messages.':' · Finished.');
     }catch(err){$('sms-progress').textContent='Stopped: '+err.message;}
     finally{sending=false;$('sms-close').disabled=false;$('sms-recipient').disabled=false;$('sms-stop').hidden=true;renderSMS();}
   }
@@ -462,7 +466,7 @@ window.PCUI = (() => {
   $('paper-type').addEventListener('change',()=>{$('practice-max-wrap').hidden=$('paper-type').value!=='MCQ';});
   $('new-paper-form').addEventListener('submit',async ev=>{ev.preventDefault();if(busy||!leaveOK())return;$('create-paper').disabled=true;try{await work(async()=>{try{const result=await api('createPaper',{name:$('paper-name').value,type:$('paper-type').value,date:$('paper-date').value,maxMcq:Number($('practice-max').value)});await refresh(result.id);$('paper-dialog').close();$('new-paper-form').reset();$('practice-max-wrap').hidden=true;U.notify('Paper created. Enter the three section marks.');}catch(err){$('paper-error').textContent=err.message;$('paper-error').hidden=false;}});}finally{$('create-paper').disabled=false;}});
   $('publish').addEventListener('click',()=>{if(!paper)return;if(jobs.some(j=>j.payload.paperId===paper.id)){U.notify('Wait for this paper’s saves to finish before publishing.',true);return;}if(dirty){U.notify('Save your changes before publishing.',true);return;}const publish=!paper.published;if(!confirm(publish?'Publish '+paper.name+'? '+summary.participants+' complete result(s) will be ranked. Incomplete results remain Pending.':'Move '+paper.name+' to draft? It will be hidden from student reports.'))return;work(async()=>{const result=await api('publishPaper',{paperId:paper.id,published:publish});paper.published=result.published;renderPaper();U.notify(result.published?'Results published. You can preview parent SMS now.':'Paper moved to draft.');});});
-  $('preview-batch').addEventListener('click',()=>preview());$('sms-recipient').addEventListener('change',renderSMS);$('sms-send').addEventListener('click',sendSMS);$('sms-stop').addEventListener('click',()=>{stopSMS=true;$('sms-progress').textContent='Stopping after the current request…';});
+  $('preview-batch').addEventListener('click',()=>preview());$('sms-recipient').addEventListener('change',renderSMS);$('sms-send').addEventListener('click',()=>sendSMS(false));$('sms-retry').addEventListener('click',()=>sendSMS(true));$('sms-stop').addEventListener('click',()=>{stopSMS=true;$('sms-progress').textContent='Stopping after the current request…';});
   $('sms-dialog').addEventListener('cancel',ev=>{if(sending)ev.preventDefault();});
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
   $('export').addEventListener('click',()=>{if(!paper)return;U.tableDownload(paper.name.replace(/[^a-z0-9_-]/gi,'_')+'.csv',['Index','Name','MCQ /'+paper.maxMcq,'Structured /60','Essay /60','Raw /200','Final /'+(paper.type==='FULL'?100:paper.maxMcq),'Rank','Participants','Status'],filteredStudents().map(s=>{const r=recordFor(s.id);return [s.id,s.name,r?r.mcq:'',r?r.structured:'',r?r.essay:'',r&&paper.type==='FULL'&&r.total!==null?r.mcq+r.structured+r.essay:'',r?r.total:'',summary.ranks[s.id]||'',summary.participants,r?r.status:'NOT_ENTERED'];}));});
