@@ -24,6 +24,10 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 @media(max-width:760px){body{font-size:16px}.small{font-size:13px}.admin-top h1{font-size:27px}.panel{padding:18px}.metric-value{font-size:30px}.metric-value small{font-size:14px}.metric-label{font-size:13px}.report-hero h1{font-size:25px}.hero-tag{font-size:10px}.hero-meta{font-size:12px}.hero-score strong{font-size:42px}.hero-score small{font-size:16px}.hero-score .eyebrow{font-size:9px}.full-paper-cards,.practice-paper-list{grid-template-columns:1fr}.full-paper-card{padding:17px}.paper-final strong{font-size:33px}.report-section-top p{font-size:14px}.breakdown-section .panel-head h2{font-size:22px}.table-wrap table{font-size:14px}.button{font-size:14px}.button.slim{font-size:12px}.mark-field input{font-size:28px}.mark-field label{font-size:12px}.mark-field .limit{font-size:12px}.sync-bar{padding:13px 15px}.sync-bar p{font-size:12px}.intro-copy{bottom:23vh}.intro-copy h1{letter-spacing:-1px}.intro-kicker{font-size:11px;letter-spacing:2px}.intro-copy p{font-size:15px}.practice-meta{font-size:13px}.practice-meta .badge{font-size:11px}.hero-score{min-width:100px}.paper-select-row select{font-size:15px}}
 @media(prefers-reduced-motion:reduce){.report-intro,.report-intro img,.intro-copy,.intro-spinner,.badge.saving{animation:none!important;transition:none!important}*{scroll-behavior:auto!important}}
 @media print{body{font-size:11px}.report-intro{display:none!important}.report-section-top p{font-size:11px}.report-charts{grid-template-columns:1fr;gap:12px}.metric-label{font-size:10px}.metric-value{font-size:24px}.metric-value small{font-size:11px}.metric-detail{font-size:9px}.report-hero h1{font-size:23px}.hero-tag,.hero-meta{font-size:10px}.full-paper-cards,.practice-paper-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.breakdown-section{break-inside:auto}.full-paper-card{padding:13px}.full-paper-card h3,.practice-paper-row h3{font-size:14px}.full-paper-card header p,.small{font-size:10px}.component-row .row{font-size:11px}.component-row strong{font-size:14px}.component-row small{font-size:10px}.paper-final strong{font-size:26px}.paper-final strong small{font-size:12px}.paper-final{padding:10px}.paper-card-footer{font-size:9px;gap:8px}.paper-card-footer b{font-size:11px}.practice-paper-row{padding:12px}.practice-score{font-size:23px}.practice-score small{font-size:11px}.practice-meta{font-size:9px}.practice-meta b{font-size:10px}.badge,.practice-meta .badge{font-size:8px}.paper-feedback{font-size:10px}.chart-caption{font-size:10px}.chart-container{min-height:0}.legend{font-size:10px}.footer{font-size:10px}}
+/* v2.2 — visible countdown, including before data finishes loading */
+.exam-countdown{display:flex;justify-content:space-between;align-items:center;gap:22px;background:linear-gradient(115deg,#122b4b,#1b466f);border:1px solid #244c73;border-radius:16px;color:#fff;padding:21px 24px;margin:16px 0 22px;box-shadow:0 5px 18px #1837560b}.countdown-copy{display:grid;gap:4px}.countdown-copy .eyebrow{color:#92ddd4;font-size:10px}.countdown-copy strong{font-size:19px}.countdown-copy>span:last-child{font-size:12px;color:#bcd0e4}.countdown-digits{display:grid;grid-template-columns:repeat(4,minmax(62px,1fr));gap:13px;text-align:center}.countdown-digits>div{min-width:62px}.countdown-digits b{display:block;font-size:35px;line-height:1.15;font-variant-numeric:tabular-nums}.countdown-digits span{font-size:12px;color:#c3d5e9;display:block;margin-top:7px}.exam-countdown.soon{border-color:#b88d39}.exam-countdown.urgent{border-color:#d05e63}.exam-countdown.urgent .countdown-digits b{color:#ffccd1}.countdown-ended{font-size:12px;color:#ffdaba}.sms-details{margin-top:13px;max-height:280px;overflow:auto}.sms-diagnostic{padding:12px 14px;background:#fff4e1;border:1px solid #ecd2a4;border-radius:9px;margin:9px 0;font-size:12px;overflow-wrap:anywhere}.sms-diagnostic p{margin:6px 0;white-space:pre-wrap}.sms-diagnostic small{color:var(--muted)}#exam-form>input{margin-bottom:4px}#exam-error{margin-top:14px}
+@media(max-width:760px){.exam-countdown{display:block;padding:18px}.countdown-copy strong{font-size:19px}.countdown-copy>span:last-child{font-size:12px}.countdown-digits{margin-top:18px;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.countdown-digits>div{min-width:0}.countdown-digits b{font-size:32px}.countdown-digits span{font-size:11px}.countdown-copy .eyebrow{font-size:10px}.report-shell .exam-countdown{margin-top:5px}.sms-diagnostic{font-size:13px}}
+@media print{.exam-countdown{display:none!important}}
 
 </style>
 </head>
@@ -36,7 +40,8 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
     <div class="side-bottom">Hasith Sir · Paper Class<br>Teacher access only</div>
   </aside>
   <main class="admin-main">
-    <header class="row spread admin-top"><div><div class="eyebrow">Assessment workspace</div><h1>Paper class marks</h1><p class="muted small">ලකුණු ඇතුළත් කරන්න. ප්‍රගතිය පැහැදිලිව බලන්න.</p></div><div class="row"><span class="small muted" id="connection"><span class="loading-dot"></span>Not connected</span><button class="button slim" id="logout" hidden>Lock</button></div></header>
+    <header class="row spread admin-top"><div><div class="eyebrow">Assessment workspace</div><h1>Paper class marks</h1><p class="muted small">ලකුණු ඇතුළත් කරන්න. ප්‍රගතිය පැහැදිලිව බලන්න.</p></div><div class="row"><span class="small muted" id="connection"><span class="loading-dot"></span>Not connected</span><button class="button slim" id="exam-settings" hidden>Exam date</button><button class="button slim" id="logout" hidden>Lock</button></div></header>
+    <section id="countdown" class="exam-countdown" aria-label="Exam countdown"></section>
     <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
     <section id="login-section" class="panel login-panel">
       <div class="eyebrow">Welcome back</div><h2>Teacher sign in</h2><p class="muted small">Apps Script setup එකේ ADMIN_KEY ඇතුළත් කරන්න.</p>
@@ -66,13 +71,15 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
       </div>
       <section class="panel"><div class="panel-head"><div><h2>Student results</h2><p class="small muted">Review, update, or open an individual report.</p></div><div class="toolbar"><input id="search" type="search" placeholder="Search name or index" aria-label="Search students"><select id="status-filter" aria-label="Filter status"><option value="ALL">All students</option><option value="COMPLETE">Complete</option><option value="INCOMPLETE">Pending</option><option value="NOT_ENTERED">Not entered</option><option value="ABSENT">Absent</option></select><button class="button slim" id="export">Export CSV</button></div></div><div class="table-wrap"><table><thead id="results-head"></thead><tbody id="results-body"></tbody></table></div></section>
     </div>
-    <footer class="footer">Hasith Sir · Science Paper Class · Marks workspace</footer>
+    <footer class="footer">Hasith Sir · Science Paper Class · v2.2.0</footer>
   </main>
 </div>
 <dialog id="paper-dialog"><form id="new-paper-form"><div class="eyebrow">Create assessment</div><h2 style="margin:6px 0 20px">New paper</h2><div class="form-grid"><div class="span2"><label for="paper-name">Paper name</label><input id="paper-name" maxlength="45" required placeholder="Full Paper 01"></div><div><label for="paper-type">Paper type</label><select id="paper-type"><option value="FULL">Full Paper — /200 → /100</option><option value="MCQ">MCQ practice</option></select></div><div><label for="paper-date">Paper date</label><input id="paper-date" type="date" required></div><div id="practice-max-wrap" hidden><label for="practice-max">MCQ maximum</label><select id="practice-max"><option value="40">40 marks</option><option value="80">80 marks</option></select></div></div><p class="small muted" style="margin-top:17px">Full Paper: MCQ /80 + Structured /60 + Essay /60. Final = total ÷ 2.</p><div id="paper-error" class="notice error" hidden></div><div class="dialog-foot"><button type="button" class="button" data-close="paper-dialog">Cancel</button><button type="submit" class="button primary" id="create-paper">Create paper</button></div></form></dialog>
-<dialog id="sms-dialog"><div class="row spread"><div><div class="eyebrow">Parent updates</div><h2>SMS preview</h2></div><button class="button slim" id="sms-close" data-close="sms-dialog">Close</button></div><p class="sms-stats" id="sms-counts"></p><label for="sms-recipient">Preview recipient</label><select id="sms-recipient"></select><pre class="preview-text" id="sms-message"></pre><p class="small muted" id="sms-length"></p><div id="sms-note" class="notice info" style="margin-top:14px">Draft එකකදීත් preview බලන්න පුළුවන්. Message යැවීමට ප්‍රතිඵල Publish කරන්න.</div><div class="dialog-foot"><button class="button" id="sms-stop" hidden>Stop after current</button><button class="button primary" id="sms-send">Send ready messages</button></div><p class="small" id="sms-progress" aria-live="polite"></p></dialog>
+<dialog id="sms-dialog"><div class="row spread"><div><div class="eyebrow">Parent updates</div><h2>SMS preview</h2></div><button class="button slim" id="sms-history">Recent status</button><button class="button slim" id="sms-close" data-close="sms-dialog">Close</button></div><p class="sms-stats" id="sms-counts"></p><label for="sms-recipient">Preview recipient</label><select id="sms-recipient"></select><pre class="preview-text" id="sms-message"></pre><p class="small muted" id="sms-length"></p><div id="sms-note" class="notice info" style="margin-top:14px">Draft එකකදීත් preview බලන්න පුළුවන්. Message යැවීමට ප්‍රතිඵල Publish කරන්න.</div><div class="dialog-foot"><button class="button" id="sms-stop" hidden>Stop after current</button><button class="button primary" id="sms-send">Send ready messages</button></div><p class="small" id="sms-progress" aria-live="polite"></p><div id="sms-details" class="sms-details" aria-live="polite"></div></dialog>
 
-<script src="config.js?v=2.1.0"></script>
+<dialog id="exam-dialog"><form id="exam-form"><div class="eyebrow">Sri Lanka time · +05:30</div><h2>Exam countdown settings</h2><p class="small muted" style="margin:12px 0 18px">ඔබගේ මුල් code එකේ තිබුණු target දිනය භාවිත කරනවා. අවශ්‍ය නිවැරදි දිනය මෙතැනින් සකස් කරන්න.</p><label for="exam-label">Countdown label</label><input id="exam-label" maxlength="60" required><label for="exam-date" style="margin-top:15px">Date and start time</label><input id="exam-date" type="datetime-local" required><div id="exam-error" class="notice error" hidden></div><div class="dialog-foot"><button type="button" class="button" data-close="exam-dialog">Cancel</button><button type="submit" class="button primary" id="exam-save">Save date</button></div></form></dialog>
+
+<script src="config.js?v=2.2.0"></script>
 <script>
 'use strict';
 window.PCUI = (() => {
@@ -181,7 +188,28 @@ window.PCUI = (() => {
     if (unicode) {units=text.length;return {parts:units<=70?1:Math.ceil(units/67),encoding:'Unicode',units};}
     return {parts:units<=160?1:Math.ceil(units/153),encoding:'GSM-7',units};
   }
-  return {$,config,escape,number,mean,localDate,reportUrl,read,admin,grade,statusLabel,badge,notify,sortPapers,tableDownload,smsEstimate,pending,newReceipt};
+  let exam={examDate:config.examDate||'2026-12-08T08:30:00+05:30',examLabel:config.examLabel||'O/L exam target'};
+  const clockKey='pc-exam-target:'+config.scriptUrl,clocks=new Set();let clockTimer=null;
+  try {const saved=JSON.parse(localStorage.getItem(clockKey)||'null');if(saved&&saved.examDate&&!isNaN(new Date(saved.examDate).getTime()))exam=saved;}catch(_){}
+  function setExamSettings(value){
+    if(value&&value.examDate&&!isNaN(new Date(value.examDate).getTime())){
+      exam={examDate:value.examDate,examLabel:value.examLabel||'O/L exam target'};
+      try{localStorage.setItem(clockKey,JSON.stringify(exam));}catch(_){}
+    }
+    renderClocks();
+  }
+  function getExamSettings(){return {...exam};}
+  function mountCountdown(id='countdown'){clocks.add(id);renderClocks();if(!clockTimer)clockTimer=setInterval(renderClocks,1000);}
+  function renderClocks(){
+    const target=new Date(exam.examDate),left=Math.max(0,target-Date.now());
+    const values=[Math.floor(left/86400000),Math.floor(left/3600000)%24,Math.floor(left/60000)%60,Math.floor(left/1000)%60];
+    const labels=['දින','පැය','මිනිත්තු','තත්පර'];
+    const dateText=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Colombo',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true}).format(target);
+    clocks.forEach(id=>{const el=$(id);if(!el)return;el.hidden=false;el.className='exam-countdown'+(left<7*86400000?' urgent':left<30*86400000?' soon':'');
+      el.innerHTML='<div class="countdown-copy"><span class="eyebrow">EXAM COUNTDOWN</span><strong>'+escape(exam.examLabel)+'</strong><span>'+escape(dateText)+' · Sri Lanka time</span></div><div class="countdown-digits">'+values.map((v,i)=>'<div><b>'+String(v).padStart(2,'0')+'</b><span>'+labels[i]+'</span></div>').join('')+'</div>'+(left===0?'<p class="countdown-ended">The target time has arrived.</p>':'');
+    });
+  }
+  return {$,config,escape,number,mean,localDate,reportUrl,read,admin,grade,statusLabel,badge,notify,sortPapers,tableDownload,smsEstimate,pending,newReceipt,setExamSettings,getExamSettings,mountCountdown};
 })();
 
 </script>
@@ -228,7 +256,7 @@ window.PCUI = (() => {
   }
   async function refresh(preferred){
     const prior=preferred||(paper&&paper.id), previousStudent=student&&student.id;
-    data=await api('bootstrap',{paperId:prior||''});
+    data=await api('bootstrap',{paperId:prior||''});U.setExamSettings(data.settings);
     $('student-select').innerHTML='<option value="">Choose a student</option>'+data.students.map(s=>'<option value="'+e(s.id)+'">'+e(s.id.slice(-2)+' · '+s.name)+'</option>').join('');
     const ordered=U.sortPapers(data.papers).reverse();
     $('paper-select').innerHTML=ordered.length?ordered.map(p=>'<option value="'+e(p.id)+'">'+e(p.name)+' · '+(p.type==='FULL'?'Full paper':'MCQ /'+p.maxMcq)+'</option>').join(''):'<option value="">Create your first paper</option>';
@@ -236,7 +264,7 @@ window.PCUI = (() => {
     $('paper-select').value=selected||'';
     await loadPaper(selected,data.selectedPaperId===selected?data.paperRecords:null);
     if(previousStudent&&data.students.some(s=>s.id===previousStudent))selectStudent(previousStudent,false);
-    if(!String(data.version).startsWith('2.1.'))U.notify('Update Code.gs and deploy New version to enable the faster save flow and draft SMS previews.',true);
+    if(!String(data.version).startsWith('2.2.'))U.notify('Update Code.gs and deploy New version to enable the faster save flow and draft SMS previews.',true);
   }
   function storeJobs(){try{localStorage.setItem(outboxKey,JSON.stringify(jobs.map(j=>({...j,state:j.state==='SAVING'?'WAITING':j.state}))));}catch(_){U.notify('The browser could not keep an outbox backup. Keep this page open until all saves finish.',true);}}
   function restoreJobs(){try{const saved=JSON.parse(localStorage.getItem(outboxKey)||'[]');jobs=Array.isArray(saved)?saved.filter(j=>j.payload&&j.record&&j.receipt).map(j=>({...j,state:j.state==='FAILED'?'FAILED':'WAITING'})):[];}catch(_){jobs=[];}renderSync();}
@@ -359,14 +387,14 @@ window.PCUI = (() => {
     if(!paper)return;
     if(dirty){U.notify('Save your changes before previewing messages.',true);return;}
     if(jobs.some(j=>j.payload.paperId===paper.id)){U.notify('Wait for this paper’s queued marks to finish saving before previewing SMS.',true);return;}
-    canSendSMS=false;previewLoading=true;smsItems=[];$('sms-progress').textContent='Loading saved results and message preview…';
-    $('sms-note').textContent=paper.published?'Previewing saved results. No SMS has been sent.':'Draft preview — you can check messages now. Publish the paper before sending.';
+    canSendSMS=false;previewLoading=true;smsItems=[];$('sms-progress').textContent='Loading saved results and message preview…';$('sms-details').innerHTML='';
+    $('sms-note').textContent=paper.published?'Previewing saved results. No SMS has been sent.':'Draft preview — Publish & send will publish these results and send the ready messages.';
     $('sms-recipient').innerHTML='';renderSMS();$('sms-dialog').showModal();
     try{
       const result=await api('previewSMS',{paperId:paper.id,index:index||''});smsItems=result.items;canSendSMS=result.canSend===undefined?!!result.paper.published:result.canSend;
       $('sms-recipient').innerHTML=smsItems.map((s,i)=>'<option value="'+i+'">'+e(s.name)+' · '+e(U.statusLabel(s.status))+'</option>').join('');
       const first=smsItems.findIndex(s=>s.status==='READY');$('sms-recipient').value=String(Math.max(0,first));
-      $('sms-progress').textContent=smsItems.length?(canSendSMS?'Preview ready. Sending requires the button below.':'Preview ready. Close this window and Publish results to enable sending.'):'No completed results yet. Save all required section marks for at least one student.';
+      $('sms-progress').textContent=smsItems.length?(canSendSMS?'Preview ready. Sending requires the button below.':'Preview ready. Publish & send will release the saved results before sending.'):'No completed results yet. Save all required section marks for at least one student.';
     }catch(err){$('sms-progress').textContent=err.message;}
     finally{previewLoading=false;renderSMS();}
   }
@@ -376,32 +404,34 @@ window.PCUI = (() => {
     const item=smsItems[Number($('sms-recipient').value)];
     $('sms-message').textContent=item?item.message:previewLoading?'Preparing your message preview…':'No completed results available.';
     const est=item?U.smsEstimate(item.message):null;
-    $('sms-length').textContent=est?item.phoneMasked+' · '+est.encoding+' · estimated '+est.parts+' SMS part(s). Longer messages may cost more.':'';
-    $('sms-send').textContent='Send '+ready+' ready message'+(ready===1?'':'s');
-    $('sms-send').disabled=!ready||!data.smsConfigured||sending||!canSendSMS||previewLoading;
+    $('sms-length').textContent=est?item.phoneMasked+' · '+item.message.length+'/149 characters · '+est.encoding+' · '+est.parts+' SMS part(s)':'';
+    $('sms-send').textContent=(canSendSMS?'Send ':'Publish & send ')+ready+' message'+(ready===1?'':'s');
+    $('sms-send').disabled=!ready||!data.smsConfigured||sending||previewLoading;
     if(!data.smsConfigured)$('sms-progress').textContent='Add SMS_API_KEY and SMS_API_TOKEN in Apps Script Script properties first.';
   }
   async function sendSMS(){
     const ready=smsItems.filter(s=>s.status==='READY');
-    if(sending||!ready.length||!canSendSMS)return;
-    if(!confirm('Send '+ready.length+' parent result message(s) now? SMS gateway charges may apply.'))return;
+    if(sending||!ready.length)return;
+    if(!confirm((canSendSMS?'Send ':'Publish these saved results and send ')+ready.length+' parent message(s) now? SMS gateway charges may apply.'))return;
     sending=true;stopSMS=false;$('sms-close').disabled=true;$('sms-recipient').disabled=true;$('sms-stop').hidden=false;$('sms-send').disabled=true;
     let accepted=0,failed=0,uncertain=0;
     try{
+      if(!canSendSMS){await api('publishPaper',{paperId:paper.id,published:true});paper.published=true;canSendSMS=true;renderPaper();}
       for(let i=0;i<ready.length;i++){
         if(stopSMS)break;
         const item=ready[i];$('sms-progress').textContent='Processing '+(i+1)+'/'+ready.length+' · '+item.name+'…';
         try{
           const result=await api('sendSMS',{paperId:paper.id,index:item.index,fingerprint:item.fingerprint});item.status=result.status;
           if(result.status==='ACCEPTED')accepted++;else if(result.status==='FAILED')failed++;else if(result.status==='UNVERIFIED'){uncertain++;stopSMS=true;}
+          if(result.detail&&result.status!=='ACCEPTED')$('sms-details').innerHTML+='<div class="sms-diagnostic"><strong>'+e(item.name)+' · '+e(result.status)+' · HTTP '+e(result.httpCode||'—')+'</strong><p>'+e(result.detail)+'</p></div>';
         }catch(err){uncertain++;stopSMS=true;item.status='UNVERIFIED';$('sms-progress').textContent=err.message;throw err;}
       }
       $('sms-progress').textContent='Accepted: '+accepted+' · Failed: '+failed+' · Unverified: '+uncertain+(stopSMS?' · Stopped. Check SMSLog before retrying uncertain messages.':' · Finished.');
     }catch(err){$('sms-progress').textContent='Stopped: '+err.message;}
     finally{sending=false;$('sms-close').disabled=false;$('sms-recipient').disabled=false;$('sms-stop').hidden=true;renderSMS();}
   }
-  $('login-form').addEventListener('submit',ev=>{ev.preventDefault();key=$('teacher-key').value.trim();work(async()=>{await refresh();$('login-section').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;$('teacher-key').value='';restoreJobs();pumpQueue();U.notify('Connected. Save & Next lets you continue while marks sync in the background.');});});
-  $('logout').addEventListener('click',()=>{if(busy||sending||pumping){U.notify('Wait for the current save to finish before locking. Failed entries stay in the outbox.',true);return;}if(!leaveOK())return;key='';data=null;paper=null;records=[];student=null;dirty=false;$('workspace').hidden=true;$('login-section').hidden=false;$('logout').hidden=true;connection('Not connected');$('teacher-key').focus();});
+  $('login-form').addEventListener('submit',ev=>{ev.preventDefault();key=$('teacher-key').value.trim();work(async()=>{await refresh();$('login-section').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;$('exam-settings').hidden=false;$('teacher-key').value='';restoreJobs();pumpQueue();U.notify('Connected. Save & Next lets you continue while marks sync in the background.');});});
+  $('logout').addEventListener('click',()=>{if(busy||sending||pumping){U.notify('Wait for the current save to finish before locking. Failed entries stay in the outbox.',true);return;}if(!leaveOK())return;key='';data=null;paper=null;records=[];student=null;dirty=false;$('workspace').hidden=true;$('login-section').hidden=false;$('logout').hidden=true;$('exam-settings').hidden=true;connection('Not connected');$('teacher-key').focus();});
   $('refresh').addEventListener('click',()=>{if(leaveOK())work(()=>refresh());});
   $('paper-select').addEventListener('change',()=>{const id=$('paper-select').value;if(!leaveOK()){$('paper-select').value=paper?paper.id:'';return;}work(()=>loadPaper(id));});
   $('student-select').addEventListener('change',()=>{if(!leaveOK()){$('student-select').value=student?student.id:'';return;}selectStudent($('student-select').value);});
@@ -422,6 +452,10 @@ window.PCUI = (() => {
   $('export').addEventListener('click',()=>{if(!paper)return;U.tableDownload(paper.name.replace(/[^a-z0-9_-]/gi,'_')+'.csv',['Index','Name','MCQ /'+paper.maxMcq,'Structured /60','Essay /60','Raw /200','Final /'+(paper.type==='FULL'?100:paper.maxMcq),'Rank','Participants','Status'],filteredStudents().map(s=>{const r=recordFor(s.id);return [s.id,s.name,r?r.mcq:'',r?r.structured:'',r?r.essay:'',r&&paper.type==='FULL'&&r.total!==null?r.mcq+r.structured+r.essay:'',r?r.total:'',summary.ranks[s.id]||'',summary.participants,r?r.status:'NOT_ENTERED'];}));});
   $('retry-failed').addEventListener('click',()=>{jobs.filter(j=>j.state==='FAILED').forEach(j=>{j.state='WAITING';j.receipt=U.newReceipt();j.error='';});storeJobs();renderSync();pumpQueue();});
   $('outbox-export').addEventListener('click',()=>U.tableDownload('Unsaved-marks-outbox.csv',['Paper ID','Index','MCQ','Structured','Essay','Status','Sync status','Error'],jobs.map(j=>[j.payload.paperId,j.payload.index,j.payload.mcq,j.payload.structured,j.payload.essay,j.payload.status,j.state,j.error||''])));
+  $('sms-history').addEventListener('click',async()=>{if(sending||previewLoading)return;$('sms-history').disabled=true;try{const result=await api('smsHistory');$('sms-details').innerHTML=result.logs.length?result.logs.map(r=>'<div class="sms-diagnostic"><strong>'+e(r.index)+' · '+e(r.status)+' · HTTP '+e(r.httpCode||'—')+'</strong><p>'+e(r.detail||'No gateway response recorded')+'</p><small>'+e(r.characters)+' characters · '+e(r.updatedAt)+'</small></div>').join(''):'No SMS requests recorded yet.';}catch(err){$('sms-details').textContent=err.message;}finally{$('sms-history').disabled=false;}});
+  $('exam-settings').addEventListener('click',()=>{if(busy)return;const setting=U.getExamSettings(),date=new Date(setting.examDate);const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Colombo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).map(p=>[p.type,p.value]));$('exam-label').value=setting.examLabel;$('exam-date').value=parts.year+'-'+parts.month+'-'+parts.day+'T'+parts.hour+':'+parts.minute;$('exam-error').hidden=true;$('exam-dialog').showModal();});
+  $('exam-form').addEventListener('submit',async ev=>{ev.preventDefault();if(busy)return;$('exam-save').disabled=true;await work(async()=>{try{const result=await api('saveExamSettings',{examDate:$('exam-date').value+':00+05:30',examLabel:$('exam-label').value});U.setExamSettings(result.settings);$('exam-dialog').close();U.notify('Exam countdown updated in Sri Lanka time.');}catch(err){$('exam-error').textContent=err.message;$('exam-error').hidden=false;}});$('exam-save').disabled=false;});
+  U.mountCountdown();
   window.addEventListener('beforeunload',ev=>{if(dirty||busy||sending||jobs.length){ev.preventDefault();ev.returnValue='';}});
 })();
 
