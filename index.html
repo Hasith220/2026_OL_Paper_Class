@@ -41,14 +41,18 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 @media(prefers-reduced-motion:reduce){.award-large-trophy,.award-confetti i,.gallery-card.loading{animation:none!important}.gallery-card img{transition:none}.award-confetti{display:none}}
 @media print{.award-dialog,.gallery-section,.gallery-lightbox{display:none!important}.achievement-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.achievement-card{padding:10px;gap:8px}.achievement-trophy{width:30px}.achievement-card h3{font-size:11px}.achievement-card p,.award-eyebrow{font-size:9px}.award-replay{display:none}.achievements-section{break-inside:avoid}}
 
+.class-switcher{display:flex;align-items:end;justify-content:space-between;gap:24px}.class-switcher>div{flex:1;max-width:440px}.class-countdown-hidden{display:none!important}@media(max-width:680px){.class-switcher{display:block}.class-switcher p{margin-top:12px}}
+
+body[data-class="GRADE10"] #countdown{display:none!important}
+
 </style>
 </head>
 <body>
-<div class="admin-shell" data-ui-version="2.3.1">
+<div class="admin-shell" data-ui-version="2.4.1">
   <aside class="sidebar">
-    <div class="brand"><span class="brand-mark supplied-logo" role="img" aria-label="Hasith Dilshan Science logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="505 180 1030 1305" aria-hidden="true"><image href="logo.jpg?v=2.3.0" width="2048" height="2048"/></svg></span><div><strong>Hasith Sir</strong><small>SCIENCE · 2026 O/L</small></div></div>
-    <div class="side-section"><div class="side-label">Teacher workspace</div><div class="nav-item selected">▦ &nbsp; Marks entry</div><p>MCQ practice & full paper results, in one place.</p></div>
-    <div class="side-section"><div class="side-label">Full paper marking</div><p>MCQ &nbsp; /80<br>Structured &nbsp; /60<br>Essay &nbsp; /60</p><div style="color:white;font-size:12px;margin-top:12px">Final = (M + S + E) ÷ 2</div></div>
+    <div class="brand"><span class="brand-mark supplied-logo" role="img" aria-label="Hasith Dilshan Science logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="505 180 1030 1305" aria-hidden="true"><image href="logo.jpg?v=2.3.0" width="2048" height="2048"/></svg></span><div><strong>Hasith Sir</strong><small><span id="sidebar-class">SCIENCE · 2026 O/L</span></small></div></div>
+    <div class="side-section"><div class="side-label">Teacher workspace</div><div class="nav-item selected">▦ &nbsp; Marks entry</div><p>Class assessments and student reports, in one place.</p></div>
+    <div class="side-section"><div class="side-label" id="marking-title">Full paper marking</div><div id="marking-copy"><p>MCQ &nbsp; /80<br>Structured &nbsp; /60<br>Essay &nbsp; /60</p><div style="color:white;font-size:12px;margin-top:12px">Final = (M + S + E) ÷ 2</div></div></div>
     <div class="side-bottom">Hasith Sir · Paper Class<br>Teacher access only</div>
   </aside>
   <main class="admin-main">
@@ -61,15 +65,16 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
       <p class="small muted" style="margin-top:15px">Authorized teaching staff only.</p>
     </section>
     <div id="workspace" hidden>
+      <section class="panel class-switcher"><div><label for="class-select">Class</label><select id="class-select"><option value="OL">2026 O/L Paper Class</option><option value="GRADE10">Grade 10 Science</option></select></div><p id="class-description" class="muted small">MCQ practice and full papers.</p></section>
       <section id="sync-bar" class="sync-bar" aria-live="polite"><div><strong id="sync-summary">All marks saved</strong><p id="sync-detail">Your assessment records are up to date.</p></div><div class="row"><button class="button slim" id="retry-failed" hidden>Retry failed</button><button class="button slim" id="outbox-export" hidden>Export unsaved marks</button></div></section>
       <div class="admin-grid">
         <div class="stack">
-          <section class="panel"><div class="panel-head"><div><h2>Select a paper</h2><p class="small muted">Full papers and MCQ practice</p></div><button class="button slim" id="new-paper">+ New paper</button></div><div class="paper-select-row"><select id="paper-select" aria-label="Paper"></select><button class="button" id="refresh" title="Refresh marks">↻</button></div><div class="paper-meta" id="paper-meta"></div></section>
-          <section class="panel" id="entry-panel"><div class="panel-head"><div><h2>Enter student marks</h2><p class="small muted">Section scores and attendance.</p></div><span id="entry-state"></span></div>
+          <section class="panel"><div class="panel-head"><div><h2>Select a paper</h2><p id="paper-subtitle" class="small muted">Full papers and MCQ practice</p></div><button class="button slim" id="new-paper">+ New paper</button></div><div class="paper-select-row"><select id="paper-select" aria-label="Paper"></select><button class="button" id="refresh" title="Refresh marks">↻</button></div><div class="paper-meta" id="paper-meta"></div></section>
+          <section class="panel" id="entry-panel"><div class="panel-head"><div><h2>Enter student marks</h2><p class="small muted" id="entry-subtitle">Section scores and attendance.</p></div><span id="entry-state"></span></div>
             <div class="student-inputs"><div><label for="suffix">Last 2 digits</label><input id="suffix" maxlength="2" inputmode="numeric" placeholder="01" autocomplete="off"></div><div><label for="student-select">Student</label><select id="student-select"><option value="">Choose a student</option></select></div></div>
             <div id="student-hit" class="student-hit" hidden><div><strong id="student-name"></strong><small id="student-id"></small></div><a id="student-report" target="_blank" rel="noopener" class="button slim">View report ↗</a></div>
             <form id="marks-form"><div class="row spread" style="margin-top:15px"><label for="attendance" style="margin:0">Result status</label><select id="attendance" style="width:150px;min-height:36px"><option value="PRESENT">Present</option><option value="ABSENT">Absent</option></select></div>
-              <div class="marks-grid"><div class="mark-field"><label for="mcq">MCQ <span class="limit" id="mcq-max">/80</span></label><input id="mcq" type="number" min="0" max="80" step="0.01" inputmode="decimal" placeholder="—"></div><div class="mark-field full-field"><label for="structured">Structured <span class="limit">/60</span></label><input id="structured" type="number" min="0" max="60" step="0.01" inputmode="decimal" placeholder="—"></div><div class="mark-field full-field"><label for="essay">Essay <span class="limit">/60</span></label><input id="essay" type="number" min="0" max="60" step="0.01" inputmode="decimal" placeholder="—"></div></div>
+              <div class="marks-grid"><div class="mark-field"><label for="mcq"><span id="score-label">MCQ</span> <span class="limit" id="mcq-max">/80</span></label><input id="mcq" type="number" min="0" max="80" step="0.01" inputmode="decimal" placeholder="—"></div><div class="mark-field full-field"><label for="structured">Structured <span class="limit">/60</span></label><input id="structured" type="number" min="0" max="60" step="0.01" inputmode="decimal" placeholder="—"></div><div class="mark-field full-field"><label for="essay">Essay <span class="limit">/60</span></label><input id="essay" type="number" min="0" max="60" step="0.01" inputmode="decimal" placeholder="—"></div></div>
               <div class="entry-total"><div><div class="eyebrow" id="total-title">Final mark</div><div class="raw" id="raw-total">Complete all three sections</div></div><div><strong id="final-total">Pending</strong><span class="muted small" id="total-max"> /100</span></div></div>
               <div class="entry-actions"><button type="submit" class="button primary" id="save-next">Save & Next →</button><button type="button" class="button" id="save-stay">Save</button></div>
               <p class="small muted" style="margin-top:12px" id="entry-help">Partial results remain pending until all sections are complete.</p>
@@ -86,14 +91,14 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
     <footer class="footer">Hasith Sir · Science Assessment Workspace</footer>
   </main>
 </div>
-<dialog id="paper-dialog"><form id="new-paper-form"><div class="eyebrow">Create assessment</div><h2 style="margin:6px 0 20px">New paper</h2><div class="form-grid"><div class="span2"><label for="paper-name">Paper name</label><input id="paper-name" maxlength="45" required placeholder="Full Paper 01"></div><div><label for="paper-type">Paper type</label><select id="paper-type"><option value="FULL">Full Paper — /200 → /100</option><option value="MCQ">MCQ practice</option></select></div><div><label for="paper-date">Paper date</label><input id="paper-date" type="date" required></div><div id="practice-max-wrap" hidden><label for="practice-max">MCQ maximum</label><select id="practice-max"><option value="40">40 marks</option><option value="80">80 marks</option></select></div></div><p class="small muted" style="margin-top:17px">Full Paper: MCQ /80 + Structured /60 + Essay /60. Final = total ÷ 2.</p><div id="paper-error" class="notice error" hidden></div><div class="dialog-foot"><button type="button" class="button" data-close="paper-dialog">Cancel</button><button type="submit" class="button primary" id="create-paper">Create paper</button></div></form></dialog>
+<dialog id="paper-dialog"><form id="new-paper-form"><div class="eyebrow">Create assessment</div><h2 style="margin:6px 0 20px">New paper</h2><div class="form-grid"><div class="span2"><label for="paper-name">Paper name</label><input id="paper-name" maxlength="45" required placeholder="Full Paper 01"></div><div><label for="paper-type">Paper type</label><select id="paper-type"><option value="FULL">Full Paper — /200 → /100</option><option value="MCQ">MCQ practice</option></select></div><div><label for="paper-date">Paper date</label><input id="paper-date" type="date" required></div><div id="practice-max-wrap" hidden><label for="practice-max">MCQ maximum</label><select id="practice-max"><option value="40">40 marks</option><option value="80">80 marks</option></select></div></div><p id="new-paper-help" class="small muted" style="margin-top:17px">Full Paper: MCQ /80 + Structured /60 + Essay /60. Final = total ÷ 2.</p><div id="paper-error" class="notice error" hidden></div><div class="dialog-foot"><button type="button" class="button" data-close="paper-dialog">Cancel</button><button type="submit" class="button primary" id="create-paper">Create paper</button></div></form></dialog>
 <dialog id="sms-dialog"><div class="row spread"><div><div class="eyebrow">Parent updates</div><h2>SMS preview</h2></div><button class="button slim" id="sms-history">Recent status</button><button class="button slim" id="sms-copy">Copy diagnostics</button><button class="button slim" id="sms-close" data-close="sms-dialog">Close</button></div><p class="sms-stats" id="sms-counts"></p><label for="sms-recipient">Preview recipient</label><select id="sms-recipient"></select><pre class="preview-text" id="sms-message"></pre><p class="small muted" id="sms-length"></p><div id="sms-note" class="notice info" style="margin-top:14px">Review recipients and message content before sending.</div><div class="dialog-foot"><button class="button" id="sms-stop" hidden>Stop after current</button><button class="button" id="sms-retry" hidden>Retry selected SMS</button><button class="button primary" id="sms-send">Send ready messages</button></div><p class="small" id="sms-progress" aria-live="polite"></p><p class="small muted sms-delivery-note">Gateway acceptance does not confirm handset delivery. Review the provider delivery report.</p><div id="sms-details" class="sms-details" aria-live="polite"></div></dialog>
 
 <dialog id="exam-dialog"><form id="exam-form"><div class="eyebrow">Sri Lanka time · +05:30</div><h2>Exam countdown settings</h2><p class="small muted" style="margin:12px 0 18px">Manage the countdown displayed on student reports.</p><label for="exam-label">Countdown label</label><input id="exam-label" maxlength="60" required><label for="exam-date" style="margin-top:15px">Date and start time</label><input id="exam-date" type="datetime-local" required><div id="exam-error" class="notice error" hidden></div><div class="dialog-foot"><button type="button" class="button" data-close="exam-dialog">Cancel</button><button type="submit" class="button primary" id="exam-save">Save date</button></div></form></dialog>
 
 <dialog id="sms-settings-dialog"><form id="sms-settings-form"><div class="eyebrow">Messaging configuration</div><h2>SMS settings</h2><p class="small muted" style="margin:14px 0">Use the sender ID approved for your WebSMS account.</p><label for="sms-sender">Approved sender ID</label><input id="sms-sender" maxlength="11" required autocomplete="off"><p class="small muted" id="sms-config-status" style="margin-top:12px"></p><div id="sms-settings-error" class="notice error" hidden></div><div class="dialog-foot"><a class="button" href="https://cloud.websms.lk/" target="_blank" rel="noopener">Open WebSMS ↗</a><button type="button" class="button" data-close="sms-settings-dialog">Cancel</button><button type="submit" class="button primary" id="sms-settings-save">Save sender</button></div></form></dialog>
 
-<script src="config.js?v=2.3.1"></script>
+<script src="config.js?v=2.4.1"></script>
 <script>
 'use strict';
 window.PCUI = (() => {
@@ -231,6 +236,8 @@ window.PCUI = (() => {
 'use strict';
 (() => {
   const U=PCUI, {$,escape:e,number:n,badge}=U;
+  let cohort='OL';
+  const actionFor=(action,cls=cohort)=>cls==='GRADE10'&&['bootstrap','paperRecords','createPaper','saveMarks','publishPaper'].includes(action)?'grade10'+action[0].toUpperCase()+action.slice(1):action;
   let key='', data=null, paper=null, records=[], student=null, summary=null, busy=false, dirty=false;
   let smsItems=[], sending=false, stopSMS=false, canSendSMS=false, previewLoading=false;
   let jobs=[],pumping=false;
@@ -246,7 +253,7 @@ window.PCUI = (() => {
     busy=true;$('workspace').inert=true;$('connect').disabled=true;connection('Working…',true);
     try{return await task();}catch(err){U.notify(err.message,true);}finally{busy=false;$('workspace').inert=false;$('connect').disabled=false;connection(data?'Connected':'Signed out');}
   }
-  const api=(action,payload={})=>U.admin(action,payload,key);
+  const api=(action,payload={})=>U.admin(actionFor(action,payload.classId||cohort),payload,key);
   function leaveOK(){return !dirty || confirm('Unsaved marks will be lost. Continue?');}
   function recalc(){
     const completed=records.filter(r=>r.status==='COMPLETE'&&r.total!==null);
@@ -273,12 +280,13 @@ window.PCUI = (() => {
     data=await api('bootstrap',{paperId:prior||''});U.setExamSettings(data.settings);
     $('student-select').innerHTML='<option value="">Choose a student</option>'+data.students.map(s=>'<option value="'+e(s.id)+'">'+e(s.id.slice(-2)+' · '+s.name)+'</option>').join('');
     const ordered=U.sortPapers(data.papers).reverse();
-    $('paper-select').innerHTML=ordered.length?ordered.map(p=>'<option value="'+e(p.id)+'">'+e(p.name)+' · '+(p.type==='FULL'?'Full paper':'MCQ /'+p.maxMcq)+'</option>').join(''):'<option value="">Create your first paper</option>';
+    $('paper-select').innerHTML=ordered.length?ordered.map(p=>'<option value="'+e(p.id)+'">'+e(p.name)+' · '+(p.type==='FULL'?'Full paper':p.type==='TOTAL'?'Assessment /100':'MCQ /'+p.maxMcq)+'</option>').join(''):'<option value="">Create your first paper</option>';
     const selected=data.selectedPaperId||(data.papers.some(p=>p.id===prior)?prior:(ordered[0]||{}).id);
     $('paper-select').value=selected||'';
     await loadPaper(selected,data.selectedPaperId===selected?data.paperRecords:null);
     if(previousStudent&&data.students.some(s=>s.id===previousStudent))selectStudent(previousStudent,false);
-    if(String(data.version)!=='2.3.1')U.notify('Update Code.gs and deploy New version to enable the updated SMS format and delivery diagnostics.',true);
+    renderClass();
+    if(String(data.version)!=='2.4.1')U.notify('Update Code.gs and deploy the new version to enable Grade 10 assessments.',true);
   }
   function storeJobs(){try{localStorage.setItem(outboxKey,JSON.stringify(jobs.map(j=>({...j,state:j.state==='SAVING'?'WAITING':j.state}))));}catch(_){U.notify('The browser could not keep an outbox backup. Keep this page open until all saves finish.',true);}}
   function restoreJobs(){try{const saved=JSON.parse(localStorage.getItem(outboxKey)||'[]');jobs=Array.isArray(saved)?saved.filter(j=>j.payload&&j.record&&j.receipt).map(j=>({...j,state:j.state==='FAILED'?'FAILED':'WAITING'})):[];}catch(_){jobs=[];}renderSync();}
@@ -297,7 +305,7 @@ window.PCUI = (() => {
       while(key&&(job=jobs.find(j=>j.state==='WAITING'))){
         job.state='SAVING';storeJobs();overlayUpdated();
         try{
-          const result=await U.admin('saveMarks',job.payload,key,null,{receipt:job.receipt});
+          const result=await U.admin(actionFor('saveMarks',job.payload.classId||'OL'),job.payload,key,null,{receipt:job.receipt});
           const p=data&&data.papers.find(p=>p.id===job.payload.paperId);if(p)p.published=result.published;
           const cached=paperCache.get(job.payload.paperId);
           if(cached){cached.data.records=cached.data.records.filter(r=>r.index!==result.record.index);cached.data.records.push(result.record);cached.at=Date.now();}
@@ -307,18 +315,31 @@ window.PCUI = (() => {
       }
     }finally{pumping=false;renderSync();}
   }
+  function renderClass(){
+    const g10=cohort==='GRADE10';document.body.dataset.class=cohort;$('class-select').value=cohort;
+    $('sidebar-class').textContent=g10?'SCIENCE · GRADE 10':'SCIENCE · 2026 O/L';
+    $('class-description').textContent=g10?'Class assessments · Final marks out of 100':'MCQ practice and full papers';
+    $('marking-title').textContent=g10?'Grade 10 marking':'Full paper marking';
+    $('marking-copy').innerHTML=g10?'<p>One final mark per paper</p><strong>/100</strong>':'<p>MCQ /80<br>Structured /60<br>Essay /60</p><div class="small">Final = (M + S + E) ÷ 2</div>';
+    $('paper-subtitle').textContent=g10?'Final-mark assessments out of 100':'Full papers and MCQ practice';
+    $('entry-subtitle').textContent=g10?'Final mark out of 100 and attendance.':'Section scores and attendance.';
+    $('entry-help').textContent=g10?'A blank mark remains Pending. A score of 0 is a completed result.':'Partial results remain pending until all sections are complete.';
+    $('exam-settings').hidden=g10||!data;$('sms-settings').hidden=g10||!data;$('countdown').classList.toggle('class-countdown-hidden',g10);
+  }
   function renderPaper(){
     const full=paper&&paper.type==='FULL';
     $('paper-meta').innerHTML=paper?badge(paper.published?'published':'draft',paper.published?'Published':'Draft')+'<span>'+e(paper.date||'Earlier MCQ practice')+'</span>':'Create a paper to start entering marks.';
     document.querySelectorAll('.full-field').forEach(el=>el.hidden=!full);
     document.querySelector('.marks-grid').style.gridTemplateColumns=full?'repeat(3,minmax(0,1fr))':'1fr';
     $('mcq').max=paper?paper.maxMcq:80;$('mcq-max').textContent='/'+(paper?paper.maxMcq:80);
-    $('total-title').textContent=full?'Final mark':'MCQ result';$('total-max').textContent=full?' /100':' /'+(paper?paper.maxMcq:40);
+    $('score-label').textContent=cohort==='GRADE10'?'Final mark':'MCQ';
+    $('total-title').textContent=full||cohort==='GRADE10'?'Final mark':'MCQ result';$('total-max').textContent=full?' /100':' /'+(paper?paper.maxMcq:40);
     $('publish').textContent=paper&&paper.published?'Move to draft':'Publish results';
     $('publication-state').innerHTML=badge(paper&&paper.published?'published':'draft',paper&&paper.published?'Published':'Draft');
     $('publication-copy').textContent=!paper?'Select an assessment to manage student reports.':paper.published?'Published results are visible on student reports.':'Publish saved results to make them available to students.';
     $('publish').disabled=!paper||jobs.some(j=>j.payload.paperId===paper.id);$('preview-batch').disabled=!paper;
     $('student-select').disabled=!paper;$('suffix').disabled=!paper;
+    $('preview-batch').hidden=cohort==='GRADE10';
   }
   function selectStudent(id,focus=true){
     student=data.students.find(s=>s.id===id)||null;dirty=false;
@@ -351,7 +372,7 @@ window.PCUI = (() => {
     const invalid=marks.some((v,i)=>v!==null&&(!Number.isFinite(v)||v<0||v>limits[i]));
     const complete=marks.every(v=>v!==null)&&!invalid, sum=marks.reduce((s,v)=>s+(v||0),0);
     $('final-total').textContent=absent?'Absent':invalid?'Check marks':complete?n(full?sum/2:sum):'Pending';
-    $('raw-total').textContent=absent?'Excluded from averages and rank':invalid?'Use marks within the section limits':full?(complete?'Raw total '+n(sum)+'/200 ÷ 2':'Enter MCQ, Structured and Essay marks'):'MCQ practice score';
+    $('raw-total').textContent=absent?'Excluded from averages and rank':invalid?'Use marks within the section limits':full?(complete?'Raw total '+n(sum)+'/200 ÷ 2':'Enter MCQ, Structured and Essay marks'):cohort==='GRADE10'?'Final score out of 100':'MCQ practice score';
     $('total-max').hidden=!complete||absent;
   }
   function renderProgress(){
@@ -370,10 +391,10 @@ window.PCUI = (() => {
   }
   function renderTable(){
     const full=paper&&paper.type==='FULL';
-    $('results-head').innerHTML='<tr><th>Student</th><th>MCQ /'+(paper?paper.maxMcq:80)+'</th>'+(full?'<th>Structured /60</th><th>Essay /60</th><th>Final /100</th>':'')+'<th>Rank</th><th>Status</th><th>Actions</th></tr>';
+    $('results-head').innerHTML='<tr><th>Student</th><th>'+(cohort==='GRADE10'?'Final mark':'MCQ')+' /'+(paper?paper.maxMcq:cohort==='GRADE10'?100:80)+'</th>'+(full?'<th>Structured /60</th><th>Essay /60</th><th>Final /100</th>':'')+'<th>Rank</th><th>Status</th><th>Actions</th></tr>';
     $('results-body').innerHTML=filteredStudents().map(s=>{
       const r=displayRecordFor(s.id), status=r?r.status:'NOT_ENTERED';
-      return '<tr><td class="name-cell"><strong>'+e(s.name)+'</strong><small>'+e(s.id)+'</small></td><td class="numeric">'+n(r?r.mcq:null)+'</td>'+(full?'<td class="numeric">'+n(r?r.structured:null)+'</td><td class="numeric">'+n(r?r.essay:null)+'</td><td class="numeric"><strong>'+n(r?r.total:null)+'</strong></td>':'')+'<td class="numeric">'+(r&&r.syncState?'—':summary.ranks[s.id]?'#'+summary.ranks[s.id]+'/'+summary.participants:'—')+'</td><td>'+(r&&r.syncState?badge(r.syncState,r.syncState==='FAILED'?'Save failed':'Saving…'):badge(status))+'</td><td class="table-action"><button class="button slim" data-edit="'+e(s.id)+'" '+(!paper?'disabled':'')+'>Edit</button> '+(status==='COMPLETE'&&!(r&&r.syncState)?'<button class="button slim" data-sms="'+e(s.id)+'">SMS</button>':'')+'</td></tr>';
+      return '<tr><td class="name-cell"><strong>'+e(s.name)+'</strong><small>'+e(s.id)+'</small></td><td class="numeric">'+n(r?r.mcq:null)+'</td>'+(full?'<td class="numeric">'+n(r?r.structured:null)+'</td><td class="numeric">'+n(r?r.essay:null)+'</td><td class="numeric"><strong>'+n(r?r.total:null)+'</strong></td>':'')+'<td class="numeric">'+(r&&r.syncState?'—':summary.ranks[s.id]?'#'+summary.ranks[s.id]+'/'+summary.participants:'—')+'</td><td>'+(r&&r.syncState?badge(r.syncState,r.syncState==='FAILED'?'Save failed':'Saving…'):badge(status))+'</td><td class="table-action"><button class="button slim" data-edit="'+e(s.id)+'" '+(!paper?'disabled':'')+'>Edit</button> '+(cohort!=='GRADE10'&&status==='COMPLETE'&&!(r&&r.syncState)?'<button class="button slim" data-sms="'+e(s.id)+'">SMS</button>':'')+'</td></tr>';
     }).join('')||'<tr><td colspan="9" class="muted">No matching students.</td></tr>';
   }
   async function save(next){
@@ -386,7 +407,7 @@ window.PCUI = (() => {
     if(values.some((v,i)=>v!==null&&(!Number.isFinite(v)||v<0||v>limits[i]||Math.abs(v*100-Math.round(v*100))>0.000001))){U.notify('Check the section marks before saving.',true);return;}
     const absent=$('attendance').value==='ABSENT',r=recordFor(student.id);
     const status=absent?'ABSENT':values.every(v=>v!==null)?'COMPLETE':'INCOMPLETE';
-    const payload={paperId:paper.id,index:student.id,expectedUpdatedAt:r?r.updatedAt:'',status:absent?'ABSENT':'PRESENT',mcq:absent?null:mcq,structured:absent?null:structured,essay:absent?null:essay};
+    const payload={classId:cohort,paperId:paper.id,index:student.id,expectedUpdatedAt:r?r.updatedAt:'',status:absent?'ABSENT':'PRESENT',mcq:absent?null:mcq,structured:absent?null:structured,essay:absent?null:essay};
     const record={index:student.id,paperId:paper.id,mcq:payload.mcq,structured:payload.structured,essay:payload.essay,status,total:status==='COMPLETE'?(paper.type==='FULL'?Math.round((mcq+structured+essay)*50)/100:mcq):null,updatedAt:r?r.updatedAt:''};
     if(existing)jobs=jobs.filter(j=>j!==existing);
     jobs.push({payload,record,receipt:U.newReceipt(),state:'WAITING',createdAt:Date.now()});
@@ -450,8 +471,17 @@ window.PCUI = (() => {
     }catch(err){$('sms-progress').textContent='Stopped: '+err.message;}
     finally{sending=false;$('sms-close').disabled=false;$('sms-recipient').disabled=false;$('sms-stop').hidden=true;renderSMS();}
   }
-  $('login-form').addEventListener('submit',ev=>{ev.preventDefault();key=$('teacher-key').value.trim();work(async()=>{await refresh();$('login-section').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;$('exam-settings').hidden=false;$('sms-settings').hidden=false;$('teacher-key').value='';restoreJobs();pumpQueue();$('notice').hidden=true;});});
+  $('login-form').addEventListener('submit',ev=>{ev.preventDefault();key=$('teacher-key').value.trim();work(async()=>{await refresh();$('login-section').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;$('exam-settings').hidden=false;$('sms-settings').hidden=false;$('teacher-key').value='';restoreJobs();pumpQueue();$('notice').hidden=true;renderClass();});});
   $('logout').addEventListener('click',()=>{if(busy||sending||pumping){U.notify('Wait for the current save to finish before locking. Failed entries stay in the outbox.',true);return;}if(!leaveOK())return;key='';data=null;paper=null;records=[];student=null;dirty=false;$('workspace').hidden=true;$('login-section').hidden=false;$('logout').hidden=true;$('exam-settings').hidden=true;$('sms-settings').hidden=true;connection('Signed out');$('teacher-key').focus();});
+  $('class-select').addEventListener('change',()=>{
+    const next=$('class-select').value,previous=cohort;
+    if(busy||sending||!leaveOK()){$('class-select').value=previous;return;}
+    work(async()=>{
+      const prev={data,paper,records,student,summary};cohort=next;paper=null;student=null;dirty=false;
+      try{await refresh();$('search').value='';$('status-filter').value='ALL';renderTable();}
+      catch(err){cohort=previous;({data,paper,records,student,summary}=prev);renderClass();renderPaper();renderEntry();renderProgress();renderTable();throw err;}
+    });
+  });
   $('refresh').addEventListener('click',()=>{if(leaveOK())work(()=>refresh());});
   $('paper-select').addEventListener('change',()=>{const id=$('paper-select').value;if(!leaveOK()){$('paper-select').value=paper?paper.id:'';return;}work(()=>loadPaper(id));});
   $('student-select').addEventListener('change',()=>{if(!leaveOK()){$('student-select').value=student?student.id:'';return;}selectStudent($('student-select').value);});
@@ -462,14 +492,14 @@ window.PCUI = (() => {
   $('marks-form').addEventListener('submit',ev=>{ev.preventDefault();save(true);});$('save-stay').addEventListener('click',()=>save(false));
   $('search').addEventListener('input',renderTable);$('status-filter').addEventListener('change',renderTable);
   $('results-body').addEventListener('click',ev=>{const edit=ev.target.closest('[data-edit]'),sms=ev.target.closest('[data-sms]');if(edit&&leaveOK()){selectStudent(edit.dataset.edit);$('entry-panel').scrollIntoView({behavior:'smooth',block:'center'});}if(sms)preview(sms.dataset.sms);});
-  $('new-paper').addEventListener('click',()=>{$('paper-date').value=U.localDate();$('paper-error').hidden=true;$('paper-dialog').showModal();$('paper-name').focus();});
+  $('new-paper').addEventListener('click',()=>{const g10=cohort==='GRADE10';$('paper-type').innerHTML=g10?'<option value="TOTAL">Assessment — /100</option>':'<option value="FULL">Full Paper — /200 → /100</option><option value="MCQ">MCQ practice</option>';$('paper-name').placeholder=g10?'3rd Term Assessment':'Full Paper 01';$('new-paper-help').textContent=g10?'Enter one final mark out of 100 for each student.':'Full Paper: MCQ /80 + Structured /60 + Essay /60. Final = total ÷ 2.';$('practice-max-wrap').hidden=true;$('paper-date').value=U.localDate();$('paper-error').hidden=true;$('paper-dialog').showModal();$('paper-name').focus();});
   $('paper-type').addEventListener('change',()=>{$('practice-max-wrap').hidden=$('paper-type').value!=='MCQ';});
-  $('new-paper-form').addEventListener('submit',async ev=>{ev.preventDefault();if(busy||!leaveOK())return;$('create-paper').disabled=true;try{await work(async()=>{try{const result=await api('createPaper',{name:$('paper-name').value,type:$('paper-type').value,date:$('paper-date').value,maxMcq:Number($('practice-max').value)});await refresh(result.id);$('paper-dialog').close();$('new-paper-form').reset();$('practice-max-wrap').hidden=true;U.notify('Paper created. Enter the three section marks.');}catch(err){$('paper-error').textContent=err.message;$('paper-error').hidden=false;}});}finally{$('create-paper').disabled=false;}});
-  $('publish').addEventListener('click',()=>{if(!paper)return;if(jobs.some(j=>j.payload.paperId===paper.id)){U.notify('Wait for this paper’s saves to finish before publishing.',true);return;}if(dirty){U.notify('Save your changes before publishing.',true);return;}const publish=!paper.published;if(!confirm(publish?'Publish '+paper.name+'? '+summary.participants+' complete result(s) will be ranked. Incomplete results remain Pending.':'Move '+paper.name+' to draft? It will be hidden from student reports.'))return;work(async()=>{const result=await api('publishPaper',{paperId:paper.id,published:publish});paper.published=result.published;renderPaper();U.notify(result.published?'Results published. You can preview parent SMS now.':'Paper moved to draft.');});});
+  $('new-paper-form').addEventListener('submit',async ev=>{ev.preventDefault();if(busy||!leaveOK())return;$('create-paper').disabled=true;try{await work(async()=>{try{const result=await api('createPaper',{name:$('paper-name').value,type:$('paper-type').value,date:$('paper-date').value,maxMcq:Number($('practice-max').value)});await refresh(result.id);$('paper-dialog').close();$('new-paper-form').reset();$('practice-max-wrap').hidden=true;U.notify(cohort==='GRADE10'?'Paper created. Enter final marks out of 100.':'Paper created. Enter the section marks.');}catch(err){$('paper-error').textContent=err.message;$('paper-error').hidden=false;}});}finally{$('create-paper').disabled=false;}});
+  $('publish').addEventListener('click',()=>{if(!paper)return;if(jobs.some(j=>j.payload.paperId===paper.id)){U.notify('Wait for this paper’s saves to finish before publishing.',true);return;}if(dirty){U.notify('Save your changes before publishing.',true);return;}const publish=!paper.published;if(!confirm(publish?'Publish '+paper.name+'? '+summary.participants+' complete result(s) will be ranked. Incomplete results remain Pending.':'Move '+paper.name+' to draft? It will be hidden from student reports.'))return;work(async()=>{const result=await api('publishPaper',{paperId:paper.id,published:publish});paper.published=result.published;renderPaper();U.notify(result.published?(cohort==='GRADE10'?'Grade 10 results published.':'Results published. You can preview parent SMS now.'):'Paper moved to draft.');});});
   $('preview-batch').addEventListener('click',()=>preview());$('sms-recipient').addEventListener('change',renderSMS);$('sms-send').addEventListener('click',()=>sendSMS(false));$('sms-retry').addEventListener('click',()=>sendSMS(true));$('sms-stop').addEventListener('click',()=>{stopSMS=true;$('sms-progress').textContent='Stopping after the current request…';});
   $('sms-dialog').addEventListener('cancel',ev=>{if(sending)ev.preventDefault();});
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
-  $('export').addEventListener('click',()=>{if(!paper)return;U.tableDownload(paper.name.replace(/[^a-z0-9_-]/gi,'_')+'.csv',['Index','Name','MCQ /'+paper.maxMcq,'Structured /60','Essay /60','Raw /200','Final /'+(paper.type==='FULL'?100:paper.maxMcq),'Rank','Participants','Status'],filteredStudents().map(s=>{const r=recordFor(s.id);return [s.id,s.name,r?r.mcq:'',r?r.structured:'',r?r.essay:'',r&&paper.type==='FULL'&&r.total!==null?r.mcq+r.structured+r.essay:'',r?r.total:'',summary.ranks[s.id]||'',summary.participants,r?r.status:'NOT_ENTERED'];}));});
+  $('export').addEventListener('click',()=>{if(!paper)return;if(cohort==='GRADE10'){U.tableDownload(paper.name.replace(/[^a-z0-9_-]/gi,'_')+'.csv',['Index','Name','Paper','Date','Final /100','Rank','Participants','Status'],filteredStudents().map(s=>{const r=recordFor(s.id);return [s.id,s.name,paper.name,paper.date,r?r.total:'',summary.ranks[s.id]||'',summary.participants,r?r.status:'NOT_ENTERED'];}));return;}U.tableDownload(paper.name.replace(/[^a-z0-9_-]/gi,'_')+'.csv',['Index','Name',(cohort==='GRADE10'?'Final mark':'MCQ')+' /'+paper.maxMcq,'Structured /60','Essay /60','Raw /200','Final /'+(paper.type==='FULL'?100:paper.maxMcq),'Rank','Participants','Status'],filteredStudents().map(s=>{const r=recordFor(s.id);return [s.id,s.name,r?r.mcq:'',r?r.structured:'',r?r.essay:'',r&&paper.type==='FULL'&&r.total!==null?r.mcq+r.structured+r.essay:'',r?r.total:'',summary.ranks[s.id]||'',summary.participants,r?r.status:'NOT_ENTERED'];}));});
   $('retry-failed').addEventListener('click',()=>{jobs.filter(j=>j.state==='FAILED').forEach(j=>{j.state='WAITING';j.receipt=U.newReceipt();j.error='';});storeJobs();renderSync();pumpQueue();});
   $('outbox-export').addEventListener('click',()=>U.tableDownload('Unsaved-marks-outbox.csv',['Paper ID','Index','MCQ','Structured','Essay','Status','Sync status','Error'],jobs.map(j=>[j.payload.paperId,j.payload.index,j.payload.mcq,j.payload.structured,j.payload.essay,j.payload.status,j.state,j.error||''])));
   $('sms-history').addEventListener('click',async()=>{if(sending||previewLoading)return;$('sms-history').disabled=true;try{const result=await api('smsHistory');$('sms-details').innerHTML=result.logs.length?result.logs.map(r=>'<div class="sms-diagnostic"><strong>'+e(r.index)+' · '+e(r.status)+' · HTTP '+e(r.httpCode||'—')+'</strong><p>'+e(r.detail||'No gateway response recorded')+'</p><small>'+e(r.characters)+' characters · '+e(r.updatedAt)+'</small></div>').join(''):'No SMS requests recorded yet.';}catch(err){$('sms-details').textContent=err.message;}finally{$('sms-history').disabled=false;}});

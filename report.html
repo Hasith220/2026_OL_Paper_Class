@@ -41,6 +41,10 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 @media(prefers-reduced-motion:reduce){.award-large-trophy,.award-confetti i,.gallery-card.loading{animation:none!important}.gallery-card img{transition:none}.award-confetti{display:none}}
 @media print{.award-dialog,.gallery-section,.gallery-lightbox{display:none!important}.achievement-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.achievement-card{padding:10px;gap:8px}.achievement-trophy{width:30px}.achievement-card h3{font-size:11px}.achievement-card p,.award-eyebrow{font-size:9px}.award-replay{display:none}.achievements-section{break-inside:avoid}}
 
+.class-switcher{display:flex;align-items:end;justify-content:space-between;gap:24px}.class-switcher>div{flex:1;max-width:440px}.class-countdown-hidden{display:none!important}@media(max-width:680px){.class-switcher{display:block}.class-switcher p{margin-top:12px}}
+
+body[data-class="GRADE10"] #countdown{display:none!important}
+
 /* Frame both people and the prize, keeping captions below the photograph. */
 .gallery-card{aspect-ratio:auto;border:1px solid var(--line);background:#fff}
 .gallery-card img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 12%;transform:none}
@@ -55,13 +59,13 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 </head>
 <body>
 <div id="report-intro" class="report-intro no-print" role="status" aria-label="Opening your class report"><img id="intro-photo" src="class-photo.jpg" alt="" fetchpriority="high"><div class="intro-shade"></div><div class="intro-copy"><span class="intro-kicker">HASITH SIR · SCIENCE</span><h1>Your effort.<br>Your progress.</h1><p>Every assessment. A clearer direction.</p><div class="intro-loading"><span class="intro-spinner"></span>Opening your report</div></div><button id="skip-intro" class="intro-skip" aria-label="Skip the opening animation">Skip intro →</button></div>
-<main data-ui-version="2.3.1" class="report-shell" id="report-shell">
+<main data-ui-version="2.4.1" class="report-shell" id="report-shell">
   <header class="row spread report-top"><div class="brand"><span class="brand-mark supplied-logo" role="img" aria-label="Hasith Dilshan Science logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="505 180 1030 1305" aria-hidden="true"><image href="logo.jpg?v=2.3.0" width="2048" height="2048"/></svg></span><div><strong style="color:var(--navy)" id="report-brand">Hasith Sir</strong><small style="color:var(--muted)">SCIENCE · STUDENT PROGRESS</small></div></div><div class="row no-print"><button class="button" id="reload-report">↻ Refresh</button><button class="button primary" id="print-report" disabled>Print / Save PDF</button></div></header>
   <section id="countdown" class="exam-countdown" aria-label="Exam countdown"></section>
   <div id="notice" class="notice info" role="status" aria-live="polite">Loading your results…</div>
   <div id="report-content" hidden>
     <section class="report-hero"><div><div class="hero-tag" id="class-name">2026 O/L Paper Class</div><h1 id="report-name"></h1><p class="hero-meta" id="report-id"></p></div><div class="hero-score"><div class="eyebrow" id="hero-label">Latest full paper</div><strong id="hero-mark">—</strong><div class="small" id="hero-paper"></div></div></section>
-    <div class="row spread report-section-top"><p class="muted">Your full papers and MCQ practice, together in one report.</p><span class="muted small" id="report-updated"></span></div>
+    <div class="row spread report-section-top"><p id="report-description" class="muted">Your full papers and MCQ practice, together in one report.</p><span class="muted small" id="report-updated"></span></div>
     <div class="metric-grid">
       <section class="metric"><div class="metric-label">Full paper average</div><div class="metric-value" id="full-average">—</div><div class="metric-detail" id="full-count"></div></section>
       <section class="metric teal"><div class="metric-label">MCQ practice average</div><div class="metric-value" id="mcq-average">—</div><div class="metric-detail" id="mcq-count"></div></section>
@@ -76,7 +80,7 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
     <section class="panel gallery-section no-print" id="gallery-section"><div class="panel-head"><div><div class="eyebrow">Beyond the marks</div><h2>Moments of achievement</h2><p class="small muted">Celebrating the effort behind every success.</p></div><span class="badge" id="gallery-count">Prize giving gallery</span></div><div class="gallery-grid" id="gallery-grid"></div></section>
     <section class="panel breakdown-section" id="full-breakdown-section"><div class="panel-head"><div><div class="eyebrow">MCQ + Structured + Essay</div><h2>Full paper breakdown</h2><p class="muted small">MCQ, structured and essay scores for every full paper.</p></div><span class="badge" id="full-paper-count"></span></div><div class="full-paper-cards" id="full-breakdown"></div></section>
     <section class="panel breakdown-section" id="mcq-breakdown-section"><div class="panel-head"><div><div class="eyebrow">Every practice paper</div><h2>MCQ practice breakdown</h2><p class="muted small">Results for every practice assessment.</p></div><span class="badge" id="mcq-paper-count"></span></div><div class="practice-paper-list" id="mcq-breakdown"></div></section>
-    <div class="row spread no-print" style="margin:20px 3px"><p class="muted small">Final = (MCQ /80 + Structured /60 + Essay /60) ÷ 2.</p><button class="button" id="report-csv">Export all results CSV</button></div>
+    <div class="row spread no-print" style="margin:20px 3px"><p id="marks-formula" class="muted small">Final = (MCQ /80 + Structured /60 + Essay /60) ÷ 2.</p><button class="button" id="report-csv">Export all results CSV</button></div>
     <p class="small muted report-note">Pending and absent results are excluded from averages and ranks. Grade bands are set by the class teacher.</p>
   </div>
   <footer class="footer" id="report-footer">Hasith Sir · Student Performance Report</footer>
@@ -85,7 +89,7 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 <dialog id="award-dialog" class="award-dialog"><div class="award-confetti" id="award-confetti" aria-hidden="true"></div><div class="award-content"><p class="award-eyebrow">Celebrating excellence</p><div class="award-large-trophy" id="award-trophy"></div><h2 id="award-place"></h2><h3 id="award-name"></h3><p class="award-paper" id="award-paper"></p><p class="award-score" id="award-score"></p><p class="award-message" id="award-message"></p><p class="small muted" id="award-counter"></p><div class="award-actions"><button class="button" id="award-next">Next achievement</button><button class="button primary" id="award-close">View report</button></div></div></dialog>
 <dialog id="gallery-dialog" class="gallery-lightbox"><header class="row spread"><strong>Moments of achievement</strong><button class="button slim" id="gallery-close">Close</button></header><img id="gallery-full-image" alt=""><footer class="row spread"><button class="button slim" id="gallery-prev" aria-label="Previous photo">← Previous</button><div><p id="gallery-full-caption"></p><p class="small muted" id="gallery-position"></p></div><button class="button slim" id="gallery-next" aria-label="Next photo">Next →</button></footer></dialog>
 
-<script src="config.js?v=2.3.1"></script>
+<script src="config.js?v=2.4.1"></script>
 <script>
 'use strict';
 window.PCUI = (() => {
@@ -289,6 +293,8 @@ window.PCReportExperience=(()=>{
 (() => {
   const U=PCUI,{$,escape:e,number:n,badge}=U;
   let report=null;
+  const requestedId=new URLSearchParams(location.search).get('id')||'';
+  if(/^276340\d{2}$/.test(requestedId))document.body.dataset.class='GRADE10';
   const complete=r=>r.status==='COMPLETE'&&r.total!==null;
   const percent=r=>r.total/(r.type==='FULL'?100:r.maxMcq)*100;
   const introStart=Date.now();let introClosed=false,skipCelebration=false;
@@ -312,15 +318,16 @@ window.PCReportExperience=(()=>{
       if(!/^2\./.test(String(report.version))||!Array.isArray(report.results))throw new Error('Update Code.gs and deploy a New version to load this report.');
       report.results=U.sortPapers(report.results);
       $('report-name').textContent=report.name;$('report-id').textContent='Index '+report.id+' · '+U.config.subject+' · '+U.config.teacherName;
-      $('class-name').textContent=U.config.className;$('report-brand').textContent=U.config.teacherName;
-      $('report-footer').textContent=U.config.teacherName+' · '+U.config.className+' · Student Performance Report';
+      $('class-name').textContent=report.className||U.config.className;$('report-brand').textContent=U.config.teacherName;
+      $('report-footer').textContent=U.config.teacherName+' · '+(report.className||U.config.className)+' · Student Performance Report';
       $('report-updated').textContent='Updated '+new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Colombo',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(report.generatedAt));
-      document.title=report.name+' | '+U.config.className;
+      document.title=report.name+' | '+(report.className||U.config.className);
       U.setExamSettings(report.settings);render();PCReportExperience.render(report);$('notice').hidden=true;$('report-content').hidden=false;$('print-report').disabled=false;
-    }catch(err){U.notify(err.message,true);}
+    }catch(err){U.notify(/^276340\d{2}$/.test(requestedId)&&/Student not found/.test(err.message)?'Grade 10 reports are being prepared. Please check with your teacher.':err.message,true);}
     finally{$('reload-report').disabled=false;closeIntro();}
   }
   function render(){
+    if(report.classId==='GRADE10'){renderGrade10();return;}
     const full=report.results.filter(r=>r.type==='FULL'),mcq=report.results.filter(r=>r.type==='MCQ');
     const fc=full.filter(complete),mc=mcq.filter(complete),lf=fc.at(-1),lm=mc.at(-1),latest=lf||lm;
     $('hero-label').textContent=lf?'Latest full paper':'Latest MCQ practice';
@@ -340,6 +347,32 @@ window.PCReportExperience=(()=>{
     $('full-breakdown').innerHTML=full.length?[...full].reverse().map(fullCard).join(''):'<div class="empty">No published full papers yet. Your full paper results will appear here.</div>';
     $('mcq-breakdown').innerHTML=mcq.length?[...mcq].reverse().map(practiceCard).join(''):'<div class="empty">No published MCQ practice papers yet.</div>';
   }
+  function renderGrade10(){
+    document.body.dataset.class='GRADE10';
+    const rows=report.results.filter(r=>r.type==='TOTAL'),done=rows.filter(complete),latest=done.at(-1),previous=done.at(-2),change=latest&&previous?latest.total-previous.total:null;
+    $('hero-label').textContent='Latest assessment';$('hero-mark').innerHTML=latest?n(latest.total)+'<small> /100</small>':'—';
+    $('hero-paper').textContent=latest?latest.name+' · Grade '+U.grade(latest.total):'No completed result yet';
+    $('report-description').textContent='Your Grade 10 Science assessments and progress.';
+    const labels=['Average mark','Completed papers','Latest paper rank','Change from previous'];
+    document.querySelectorAll('.metric-label').forEach((el,i)=>el.textContent=labels[i]);
+    $('full-average').innerHTML=n(U.mean(done.map(r=>r.total)))+'<small> /100</small>';
+    $('full-count').textContent='Average across your completed assessments';
+    $('mcq-average').innerHTML=done.length+'<small> /'+rows.length+'</small>';
+    $('mcq-count').textContent=(rows.length-done.length)+' pending or absent';
+    $('full-rank').innerHTML=latest?'#'+latest.rank+'<small> /'+latest.participants+'</small>':'—';
+    $('full-rank-name').textContent=latest?latest.name:'No completed assessment yet';
+    $('mcq-rank').innerHTML=(change===null?'—':(change>0?'+':'')+n(change))+'<small> marks</small>';
+    $('mcq-rank-name').textContent=previous?'Compared with '+previous.name:'Complete two papers to compare progress';
+    const chart=$('full-chart').closest('.panel');chart.querySelector('h2').textContent='Assessment performance';chart.querySelector('.eyebrow').textContent='Grade 10 progress';chart.querySelector('.chart-caption').textContent='Your final mark and Grade 10 class average for each published assessment.';
+    $('mcq-chart').closest('.panel').hidden=true;document.querySelector('.report-charts').style.gridTemplateColumns='1fr';renderChart('full-chart',rows);
+    const section=$('full-breakdown-section');section.querySelector('h2').textContent='Assessment results';section.querySelector('.eyebrow').textContent='Every paper, every result';section.querySelector('.panel-head p').textContent='Final marks out of 100. Rank is calculated within Grade 10 for each assessment.';
+    $('full-paper-count').textContent=rows.length+' paper'+(rows.length===1?'':'s');
+    $('full-breakdown').innerHTML=rows.length?[...rows].reverse().map(r=>{
+      const ready=complete(r);
+      return '<article class="full-paper-card"><header class="row spread"><div><h3>'+e(r.name)+'</h3><p class="small muted">'+e(r.date||'Assessment')+'</p></div>'+badge(r.status)+'</header><div class="paper-final"><div><span class="muted">Final mark</span><strong>'+n(r.total)+'<small> /100</small></strong></div><div class="paper-grade">'+(ready?'Grade <b>'+e(U.grade(r.total))+'</b>':'<span>Awaiting result</span>')+'</div></div><div class="bar-track"><i style="width:'+(ready?r.total:0)+'%"></i></div><div class="paper-card-footer"><span>Rank <b>'+(r.rank?'#'+r.rank+'/'+r.participants:'—')+'</b></span><span>Class average <b>'+n(r.classAvg)+'/100</b></span></div></article>';
+    }).join(''):'<div class="empty">Your results will appear here after your teacher publishes an assessment.</div>';
+    $('mcq-breakdown-section').hidden=true;$('marks-formula').textContent='Final marks are recorded directly out of 100.';
+  }
   function markBar(label,value,max,color){
     return '<div class="component-row"><div class="row spread"><span>'+label+'</span><strong>'+n(value)+'<small> /'+max+'</small></strong></div><div class="bar-track"><i style="width:'+(value===null?0:Math.min(100,Math.max(0,value/max*100)))+'%;background:'+color+'"></i></div></div>';
   }
@@ -355,7 +388,7 @@ window.PCReportExperience=(()=>{
     if(!rows.length){$(target).innerHTML='<div class="empty">Published results will appear here.</div>';return;}
     const width=Math.max(600,rows.length*90+75),height=300,left=44,right=20,top=24,bottom=218,plot=width-left-right;
     const x=i=>left+plot*(i+.5)/rows.length,y=v=>bottom-(bottom-top)*v/100;
-    let svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' '+height+'" style="width:'+width+'px;height:300px" role="img" aria-label="'+e(target==='full-chart'?'All full paper results and class averages':'All MCQ practice percentages and class averages')+'">';
+    let svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' '+height+'" style="width:'+width+'px;height:300px" role="img" aria-label="'+e(target==='full-chart'?(report.classId==='GRADE10'?'Grade 10 assessment results and class averages':'All full paper results and class averages'):'All MCQ practice percentages and class averages')+'">';
     for(const v of [0,25,50,75,100])svg+='<line x1="'+left+'" y1="'+y(v)+'" x2="'+(width-right)+'" y2="'+y(v)+'" stroke="#e4ebf3"/><text x="'+(left-9)+'" y="'+(y(v)+4)+'" font-size="12" fill="#687b91" text-anchor="end">'+v+'</text>';
     const own=rows.map(r=>complete(r)?percent(r):null),avg=rows.map(r=>r.classAvg===null?null:r.classAvg/(r.type==='FULL'?100:r.maxMcq)*100);
     function line(values,color,dashed){let path='',open=false;values.forEach((v,i)=>{if(v===null){open=false;return;}path+=(open?' L ':' M ')+x(i)+' '+y(v);open=true;});return '<path d="'+path+'" fill="none" stroke="'+color+'" stroke-width="3" '+(dashed?'stroke-dasharray="6 4"':'')+'/>';}
@@ -368,7 +401,7 @@ window.PCReportExperience=(()=>{
     $(target).innerHTML=svg+'</svg>';
   }
   $('reload-report').addEventListener('click',load);$('print-report').addEventListener('click',()=>{skipCelebration=true;PCReportExperience.closeAward();closeIntro(true);window.print();});
-  $('report-csv').addEventListener('click',()=>U.tableDownload('Report-'+report.id+'-all-results.csv',['Type','Paper','Date','MCQ','MCQ Max','Structured /60','Essay /60','Final','Final Max','Rank','Participants','Class Average','Status'],report.results.map(r=>[r.type,r.name,r.date,r.mcq,r.maxMcq,r.structured,r.essay,r.total,r.type==='FULL'?100:r.maxMcq,r.rank,r.participants,r.classAvg,U.statusLabel(r.status)])));
+  $('report-csv').addEventListener('click',()=>{if(report.classId==='GRADE10'){U.tableDownload('Report-'+report.id+'.csv',['Index','Name','Paper','Date','Final /100','Class average /100','Rank','Participants','Status'],report.results.map(r=>[report.id,report.name,r.name,r.date,r.total,r.classAvg,r.rank,r.participants,U.statusLabel(r.status)]));return;}U.tableDownload('Report-'+report.id+'-all-results.csv',['Type','Paper','Date','MCQ','MCQ Max','Structured /60','Essay /60','Final','Final Max','Rank','Participants','Class Average','Status'],report.results.map(r=>[r.type,r.name,r.date,r.mcq,r.maxMcq,r.structured,r.essay,r.total,r.type==='FULL'?100:r.maxMcq,r.rank,r.participants,r.classAvg,U.statusLabel(r.status)]));});
   U.mountCountdown();PCReportExperience.initGallery();load();
 })();
 
