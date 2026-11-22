@@ -43,7 +43,9 @@ body{font-size:16px;color:#182a43}.muted{color:#586d85}.small{font-size:14px}.ey
 
 .class-switcher{display:flex;align-items:end;justify-content:space-between;gap:24px}.class-switcher>div{flex:1;max-width:440px}.class-countdown-hidden{display:none!important}@media(max-width:680px){.class-switcher{display:block}.class-switcher p{margin-top:12px}}
 
-body[data-class="GRADE10"] #countdown{display:none!important}
+body[data-class^="GRADE"] #countdown{display:none!important}
+
+.registration-fields{margin:18px 0}.registration-fields #registration-hint{margin-top:6px}.class-switcher #open-student{flex-shrink:0}@media(max-width:680px){.class-switcher #open-student{margin-top:14px}}
 
 /* Frame both people and the prize, keeping captions below the photograph. */
 .gallery-card{aspect-ratio:auto;border:1px solid var(--line);background:#fff}
@@ -89,10 +91,13 @@ body[data-class="GRADE10"] #countdown{display:none!important}
 <dialog id="award-dialog" class="award-dialog"><div class="award-confetti" id="award-confetti" aria-hidden="true"></div><div class="award-content"><p class="award-eyebrow">Celebrating excellence</p><div class="award-large-trophy" id="award-trophy"></div><h2 id="award-place"></h2><h3 id="award-name"></h3><p class="award-paper" id="award-paper"></p><p class="award-score" id="award-score"></p><p class="award-message" id="award-message"></p><p class="small muted" id="award-counter"></p><div class="award-actions"><button class="button" id="award-next">Next achievement</button><button class="button primary" id="award-close">View report</button></div></div></dialog>
 <dialog id="gallery-dialog" class="gallery-lightbox"><header class="row spread"><strong>Moments of achievement</strong><button class="button slim" id="gallery-close">Close</button></header><img id="gallery-full-image" alt=""><footer class="row spread"><button class="button slim" id="gallery-prev" aria-label="Previous photo">← Previous</button><div><p id="gallery-full-caption"></p><p class="small muted" id="gallery-position"></p></div><button class="button slim" id="gallery-next" aria-label="Next photo">Next →</button></footer></dialog>
 
-<script src="config.js?v=2.4.1"></script>
+<script src="config.js?v=2.5.0"></script>
 <script>
 'use strict';
 window.PCUI = (() => {
+  const indexPrefixes = {OL:'265340', GRADE10:'276340', GRADE9:'28734', GRADE8:'29834', GRADE7:'30934', GRADE6:'31034'};
+  const gradeLabel = id => id === 'OL' ? 'O/L Paper Class' : 'Grade ' + id.slice(5);
+  const classForIndex = id => Object.keys(indexPrefixes).find(cls => /^\d{8}$/.test(id) && id.startsWith(indexPrefixes[cls]));
   const config = window.PAPER_CLASS_CONFIG;
   const $ = id => document.getElementById(id);
   const escape = value => String(value == null ? '' : value).replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -219,7 +224,7 @@ window.PCUI = (() => {
       el.innerHTML='<div class="countdown-copy"><span class="eyebrow">EXAM COUNTDOWN</span><strong>'+escape(exam.examLabel)+'</strong><span>'+escape(dateText)+' · Sri Lanka time</span></div><div class="countdown-digits">'+values.map((v,i)=>'<div><b>'+String(v).padStart(2,'0')+'</b><span>'+labels[i]+'</span></div>').join('')+'</div>'+(left===0?'<p class="countdown-ended">The target time has arrived.</p>':'');
     });
   }
-  return {$,config,escape,number,mean,localDate,reportUrl,read,admin,grade,statusLabel,badge,notify,sortPapers,tableDownload,smsEstimate,pending,newReceipt,setExamSettings,getExamSettings,mountCountdown};
+  return {$,config,indexPrefixes,gradeLabel,classForIndex,escape,number,mean,localDate,reportUrl,read,admin,grade,statusLabel,badge,notify,sortPapers,tableDownload,smsEstimate,pending,newReceipt,setExamSettings,getExamSettings,mountCountdown};
 })();
 
 </script>
@@ -294,7 +299,8 @@ window.PCReportExperience=(()=>{
   const U=PCUI,{$,escape:e,number:n,badge}=U;
   let report=null;
   const requestedId=new URLSearchParams(location.search).get('id')||'';
-  if(/^276340\d{2}$/.test(requestedId))document.body.dataset.class='GRADE10';
+  const requestedClass=U.classForIndex(requestedId);
+  if(requestedClass)document.body.dataset.class=requestedClass;
   const complete=r=>r.status==='COMPLETE'&&r.total!==null;
   const percent=r=>r.total/(r.type==='FULL'?100:r.maxMcq)*100;
   const introStart=Date.now();let introClosed=false,skipCelebration=false;
@@ -323,11 +329,11 @@ window.PCReportExperience=(()=>{
       $('report-updated').textContent='Updated '+new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Colombo',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(report.generatedAt));
       document.title=report.name+' | '+(report.className||U.config.className);
       U.setExamSettings(report.settings);render();PCReportExperience.render(report);$('notice').hidden=true;$('report-content').hidden=false;$('print-report').disabled=false;
-    }catch(err){U.notify(/^276340\d{2}$/.test(requestedId)&&/Student not found/.test(err.message)?'Grade 10 reports are being prepared. Please check with your teacher.':err.message,true);}
+    }catch(err){U.notify(requestedClass && requestedClass!=='OL' && /Student not found/.test(err.message)?'Index not found in '+U.gradeLabel(requestedClass)+'. Check the index with your teacher.':err.message,true);}
     finally{$('reload-report').disabled=false;closeIntro();}
   }
   function render(){
-    if(report.classId==='GRADE10'){renderGrade10();return;}
+    if(!!report.classId && report.classId!=='OL'){renderGradeAssessment();return;}
     const full=report.results.filter(r=>r.type==='FULL'),mcq=report.results.filter(r=>r.type==='MCQ');
     const fc=full.filter(complete),mc=mcq.filter(complete),lf=fc.at(-1),lm=mc.at(-1),latest=lf||lm;
     $('hero-label').textContent=lf?'Latest full paper':'Latest MCQ practice';
@@ -347,12 +353,13 @@ window.PCReportExperience=(()=>{
     $('full-breakdown').innerHTML=full.length?[...full].reverse().map(fullCard).join(''):'<div class="empty">No published full papers yet. Your full paper results will appear here.</div>';
     $('mcq-breakdown').innerHTML=mcq.length?[...mcq].reverse().map(practiceCard).join(''):'<div class="empty">No published MCQ practice papers yet.</div>';
   }
-  function renderGrade10(){
-    document.body.dataset.class='GRADE10';
+  function renderGradeAssessment(){
+    document.body.dataset.class=report.classId;
+    const label=U.gradeLabel(report.classId);
     const rows=report.results.filter(r=>r.type==='TOTAL'),done=rows.filter(complete),latest=done.at(-1),previous=done.at(-2),change=latest&&previous?latest.total-previous.total:null;
     $('hero-label').textContent='Latest assessment';$('hero-mark').innerHTML=latest?n(latest.total)+'<small> /100</small>':'—';
     $('hero-paper').textContent=latest?latest.name+' · Grade '+U.grade(latest.total):'No completed result yet';
-    $('report-description').textContent='Your Grade 10 Science assessments and progress.';
+    $('report-description').textContent='Your '+label+' Science assessments and progress.';
     const labels=['Average mark','Completed papers','Latest paper rank','Change from previous'];
     document.querySelectorAll('.metric-label').forEach((el,i)=>el.textContent=labels[i]);
     $('full-average').innerHTML=n(U.mean(done.map(r=>r.total)))+'<small> /100</small>';
@@ -363,9 +370,9 @@ window.PCReportExperience=(()=>{
     $('full-rank-name').textContent=latest?latest.name:'No completed assessment yet';
     $('mcq-rank').innerHTML=(change===null?'—':(change>0?'+':'')+n(change))+'<small> marks</small>';
     $('mcq-rank-name').textContent=previous?'Compared with '+previous.name:'Complete two papers to compare progress';
-    const chart=$('full-chart').closest('.panel');chart.querySelector('h2').textContent='Assessment performance';chart.querySelector('.eyebrow').textContent='Grade 10 progress';chart.querySelector('.chart-caption').textContent='Your final mark and Grade 10 class average for each published assessment.';
+    const chart=$('full-chart').closest('.panel');chart.querySelector('h2').textContent='Assessment performance';chart.querySelector('.eyebrow').textContent=label+' progress';chart.querySelector('.chart-caption').textContent='Your final mark and the '+label+' class average for each published assessment.';
     $('mcq-chart').closest('.panel').hidden=true;document.querySelector('.report-charts').style.gridTemplateColumns='1fr';renderChart('full-chart',rows);
-    const section=$('full-breakdown-section');section.querySelector('h2').textContent='Assessment results';section.querySelector('.eyebrow').textContent='Every paper, every result';section.querySelector('.panel-head p').textContent='Final marks out of 100. Rank is calculated within Grade 10 for each assessment.';
+    const section=$('full-breakdown-section');section.querySelector('h2').textContent='Assessment results';section.querySelector('.eyebrow').textContent='Every paper, every result';section.querySelector('.panel-head p').textContent='Final marks out of 100. Rank is calculated within '+label+' for each assessment.';
     $('full-paper-count').textContent=rows.length+' paper'+(rows.length===1?'':'s');
     $('full-breakdown').innerHTML=rows.length?[...rows].reverse().map(r=>{
       const ready=complete(r);
@@ -388,7 +395,7 @@ window.PCReportExperience=(()=>{
     if(!rows.length){$(target).innerHTML='<div class="empty">Published results will appear here.</div>';return;}
     const width=Math.max(600,rows.length*90+75),height=300,left=44,right=20,top=24,bottom=218,plot=width-left-right;
     const x=i=>left+plot*(i+.5)/rows.length,y=v=>bottom-(bottom-top)*v/100;
-    let svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' '+height+'" style="width:'+width+'px;height:300px" role="img" aria-label="'+e(target==='full-chart'?(report.classId==='GRADE10'?'Grade 10 assessment results and class averages':'All full paper results and class averages'):'All MCQ practice percentages and class averages')+'">';
+    let svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' '+height+'" style="width:'+width+'px;height:300px" role="img" aria-label="'+e(target==='full-chart'?(!!report.classId && report.classId!=='OL'?U.gradeLabel(report.classId)+' assessment results and class averages':'All full paper results and class averages'):'All MCQ practice percentages and class averages')+'">';
     for(const v of [0,25,50,75,100])svg+='<line x1="'+left+'" y1="'+y(v)+'" x2="'+(width-right)+'" y2="'+y(v)+'" stroke="#e4ebf3"/><text x="'+(left-9)+'" y="'+(y(v)+4)+'" font-size="12" fill="#687b91" text-anchor="end">'+v+'</text>';
     const own=rows.map(r=>complete(r)?percent(r):null),avg=rows.map(r=>r.classAvg===null?null:r.classAvg/(r.type==='FULL'?100:r.maxMcq)*100);
     function line(values,color,dashed){let path='',open=false;values.forEach((v,i)=>{if(v===null){open=false;return;}path+=(open?' L ':' M ')+x(i)+' '+y(v);open=true;});return '<path d="'+path+'" fill="none" stroke="'+color+'" stroke-width="3" '+(dashed?'stroke-dasharray="6 4"':'')+'/>';}
@@ -401,7 +408,7 @@ window.PCReportExperience=(()=>{
     $(target).innerHTML=svg+'</svg>';
   }
   $('reload-report').addEventListener('click',load);$('print-report').addEventListener('click',()=>{skipCelebration=true;PCReportExperience.closeAward();closeIntro(true);window.print();});
-  $('report-csv').addEventListener('click',()=>{if(report.classId==='GRADE10'){U.tableDownload('Report-'+report.id+'.csv',['Index','Name','Paper','Date','Final /100','Class average /100','Rank','Participants','Status'],report.results.map(r=>[report.id,report.name,r.name,r.date,r.total,r.classAvg,r.rank,r.participants,U.statusLabel(r.status)]));return;}U.tableDownload('Report-'+report.id+'-all-results.csv',['Type','Paper','Date','MCQ','MCQ Max','Structured /60','Essay /60','Final','Final Max','Rank','Participants','Class Average','Status'],report.results.map(r=>[r.type,r.name,r.date,r.mcq,r.maxMcq,r.structured,r.essay,r.total,r.type==='FULL'?100:r.maxMcq,r.rank,r.participants,r.classAvg,U.statusLabel(r.status)]));});
+  $('report-csv').addEventListener('click',()=>{if(!!report.classId && report.classId!=='OL'){U.tableDownload('Report-'+report.id+'.csv',['Index','Name','Paper','Date','Final /100','Class average /100','Rank','Participants','Status'],report.results.map(r=>[report.id,report.name,r.name,r.date,r.total,r.classAvg,r.rank,r.participants,U.statusLabel(r.status)]));return;}U.tableDownload('Report-'+report.id+'-all-results.csv',['Type','Paper','Date','MCQ','MCQ Max','Structured /60','Essay /60','Final','Final Max','Rank','Participants','Class Average','Status'],report.results.map(r=>[r.type,r.name,r.date,r.mcq,r.maxMcq,r.structured,r.essay,r.total,r.type==='FULL'?100:r.maxMcq,r.rank,r.participants,r.classAvg,U.statusLabel(r.status)]));});
   U.mountCountdown();PCReportExperience.initGallery();load();
 })();
 
